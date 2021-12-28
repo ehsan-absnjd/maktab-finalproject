@@ -1,19 +1,22 @@
 package ir.maktab.finalproject.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order {
+public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -45,7 +48,8 @@ public class Order {
 
     @OneToMany
     @JoinColumn(name = "order_id")
-    private Set<Offer> offers;
+    @Builder.Default
+    private Set<Offer> offers = new HashSet<>();
 
     @OneToOne
     @JoinColumn(name = "offer_id")
@@ -54,4 +58,14 @@ public class Order {
     private Double points;
 
     private String comment;
+
+    public void addOffer(Offer offer){
+        offers.add(offer);
+        offer.setRequest(this);
+    }
+
+    public void removeOffer(Offer offer){
+        offers.remove(offer);
+        offer.setRequest(null);
+    }
 }
