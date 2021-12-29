@@ -1,9 +1,6 @@
 package ir.maktab.finalproject.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
@@ -14,7 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
+@Setter
+@Getter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
