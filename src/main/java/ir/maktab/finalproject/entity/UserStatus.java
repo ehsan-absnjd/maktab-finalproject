@@ -1,3 +1,3 @@
 package ir.maktab.finalproject.entity;
 
-enum UserStatus{NEW,WAITING_APPROVAL,APPROVED}
+public enum UserStatus{NEW,WAITING_APPROVAL,APPROVED}

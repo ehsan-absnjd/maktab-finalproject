@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "title", "assistance_id" }) })
 @Setter
 @Getter
 @Builder
@@ -18,7 +19,6 @@ public class SubAssistance{
     private Long id;
 
     @NotNull
-    @Column(unique = true)
     private String title;
 
     @NotNull

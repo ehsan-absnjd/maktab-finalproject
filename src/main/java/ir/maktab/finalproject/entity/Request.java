@@ -42,7 +42,7 @@ public class Request {
     private String address;
 
     @NotNull
-    private OrderStatus status;
+    private RequestStatus status;
 
     @OneToMany
     @JoinColumn(name = "order_id")

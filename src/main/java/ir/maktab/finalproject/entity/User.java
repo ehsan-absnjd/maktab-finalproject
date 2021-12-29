@@ -31,7 +31,7 @@ public class User{
     private String email;
 
     @Size(min = 8)
-    @Pattern( regexp = "\\d")
+    @Pattern( regexp = ".*[0-9].*")
     private String password;
 
     @NotNull

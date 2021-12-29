@@ -17,13 +17,13 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Specialist extends User {
-    @NotNull
+
     private String photoURL;
 
-    @NotNull
     private Double points;
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(name = "specialist_assistance")
     private Set<Assistance> assistances = new HashSet<>();
 

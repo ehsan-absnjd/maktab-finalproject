@@ -4,7 +4,6 @@ import ir.maktab.finalproject.TestConfig;
 import ir.maktab.finalproject.entity.Assistance;
 import ir.maktab.finalproject.entity.SubAssistance;
 import ir.maktab.finalproject.exception.AssistanceNotFoundException;
-import ir.maktab.finalproject.exception.DuplicateTitleException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -27,32 +26,35 @@ class AssistanceServiceTest {
 
     @Test
     public void whenSavingNewAssistance_shouldBeApleToRetrieveIt(){
-        Long id = saveNewAssistanceAndReturnId();
-        Optional<Assistance> retrieved = service.findById(id);
+        Assistance assistance = saveNewAssistanceAndReturn();
+        Optional<Assistance> retrieved = service.findById(assistance.getId());
         assertNotNull(retrieved.get());
+        assertEquals(assistance , retrieved.get());
     }
 
     @Test
     public void whenSavingTwoAssistancesWithSameTitle_shouldThrow(){
-        saveNewAssistanceAndReturnId();
-        saveNewAssistanceAndReturnId();
-        System.out.println(service.findAll().stream().count());
+        saveNewAssistanceAndReturn();
+        saveNewAssistanceAndReturn();
+        //System.out.println(service.findAll().stream().count());
     }
 
     @Test
     public void whenAddingSubAssistanceUsingId_shouldBeAbleToRetrieveIt(){
-        Long id = saveNewAssistanceAndReturnId();
+        Long id = saveNewAssistanceAndReturn().getId();
         SubAssistance subAssistance = SubAssistance.builder()
                 .title("shostoshu").description("description").basePrice(13.5).build();
+        SubAssistance subAssistance2 = SubAssistance.builder()
+                .title("shostoshu").description("description2").basePrice(143.5).build();
         service.addSubAssistanceById(id,subAssistance);
+        service.addSubAssistanceById(id, subAssistance2);
         Assistance assistance = service.findById(id).get();
-        assertEquals(assistance.getSubAssistances().stream().count() , 1);
         assertTrue(contains(assistance.getSubAssistances() , subAssistance));
     }
 
     @Test
     public void whenAddingSubAssistanceUsingInstance_shouldBeAbleToRetrieveIt(){
-        Long id = saveNewAssistanceAndReturnId();
+        Long id = saveNewAssistanceAndReturn().getId();
         SubAssistance subAssistance = SubAssistance.builder()
                 .title("shostoshu").description("description").basePrice(13.5).build();
         Assistance assistance = service.findById(id).get();
@@ -62,15 +64,26 @@ class AssistanceServiceTest {
     }
 
     @Test
+    public void whenAddingTwoSubAssistanceWithSameTitleAndAssistanceId_shouldThrow(){
+        Long id = saveNewAssistanceAndReturn().getId();
+        SubAssistance subAssistance = SubAssistance.builder()
+                .title("shostoshu").description("description").basePrice(13.5).build();
+        SubAssistance subAssistance2 = SubAssistance.builder()
+                .title("shostoshu").description("description2").basePrice(143.5).build();
+        service.addSubAssistanceById(id,subAssistance);
+        service.addSubAssistanceById(id, subAssistance2);
+    }
+
+    @Test
     public void whenAddingSubAssistanceForUnValidAssistanceId_shouldThrowAssistanceNotFoundException(){
         SubAssistance subAssistance = SubAssistance.builder()
                 .title("shostoshu").description("description").basePrice(13.5).build();
         assertThrows(AssistanceNotFoundException.class , ()->service.addSubAssistanceById(2l,subAssistance));
     }
 
-    public Long saveNewAssistanceAndReturnId(){
+    public Assistance saveNewAssistanceAndReturn(){
         Assistance assistance = Assistance.builder().title("behdasht").build();
-        return service.save(assistance).getId();
+        return service.save(assistance);
     }
 
     public boolean contains(Set<SubAssistance> set , SubAssistance sa){
