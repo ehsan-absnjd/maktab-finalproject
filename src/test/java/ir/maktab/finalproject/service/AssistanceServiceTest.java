@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Set;
@@ -36,7 +37,9 @@ class AssistanceServiceTest {
     public void whenSavingTwoAssistancesWithSameTitle_shouldThrow(){
         saveNewAssistanceAndReturn();
         saveNewAssistanceAndReturn();
-        //System.out.println(service.findAll().stream().count());
+
+   //     System.out.println(service.findAll().stream().count());
+//        saveNewAssistanceAndReturn();
     }
 
     @Test
