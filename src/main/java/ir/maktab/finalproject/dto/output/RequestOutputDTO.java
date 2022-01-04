@@ -5,6 +5,8 @@ import ir.maktab.finalproject.entity.Offer;
 import ir.maktab.finalproject.entity.RequestStatus;
 import ir.maktab.finalproject.entity.SubAssistance;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,13 +14,16 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+@Builder
+@Setter
+@Getter
 public class RequestOutputDTO {
 
     private Long id;
 
-    private CustomerOutputDTO customer;
+    private Long customerId;
 
-    private SubAssistanceOutputDTO subAssistance;
+    private Long subAssistanceId;
 
     private Double offeredPrice;
 
@@ -32,7 +37,7 @@ public class RequestOutputDTO {
 
     private RequestStatus status;
 
-    private OfferOutputDTO selectedOffer;
+    private Long selectedOffer;
 
     private Double points;
 

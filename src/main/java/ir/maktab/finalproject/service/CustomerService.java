@@ -5,6 +5,7 @@ import ir.maktab.finalproject.dto.output.CustomerOutputDTO;
 import ir.maktab.finalproject.entity.Customer;
 import ir.maktab.finalproject.entity.UserStatus;
 import ir.maktab.finalproject.exception.CustomerNotFoundException;
+import ir.maktab.finalproject.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -17,13 +18,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CustomerService extends BaseService<Customer,Long>{
+public class CustomerService{
 
     @Autowired
-    @Qualifier("customerRepository")
-    protected void setRepository(JpaRepository<Customer, Long> repository) {
-        this.repository = repository;
-    }
+    CustomerRepository repository;
 
     @Transactional
     public CustomerOutputDTO save(CustomerInputDTO inputDTO){

@@ -21,16 +21,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class SubAssistanceService extends BaseService<SubAssistance,Long>{
+public class SubAssistanceService{
+
+    @Autowired
+    SubAssistanceRepository repository;
 
     @Autowired
     AssistanceRepository assistanceRepository;
-
-    @Autowired
-    @Qualifier("subAssistanceRepository")
-    protected void setRepository(JpaRepository<SubAssistance, Long> repository) {
-        this.repository = repository;
-    }
 
     @Transactional
     public SubAssistanceOutputDTO save(Long assistanceId , SubAssistanceInputDTO inputDTO){
@@ -44,26 +41,26 @@ public class SubAssistanceService extends BaseService<SubAssistance,Long>{
 
     @Transactional(readOnly = true)
     public SubAssistanceOutputDTO findById(Long assistanceId , Long subAssistanceId){
-        SubAssistance subAssistance = ((SubAssistanceRepository) repository)
+        SubAssistance subAssistance = repository
                 .findByAssistanceIdAndSubAssistanceId(assistanceId, subAssistanceId);
         return convertToDTO(subAssistance);
     }
 
     @Transactional(readOnly = true)
     public List<SubAssistanceOutputDTO> findAll(Long assistanceId ){
-        List<SubAssistance> subAssistances = ((SubAssistanceRepository) repository).findByAssistanceId(assistanceId);
+        List<SubAssistance> subAssistances =  repository.findByAssistanceId(assistanceId);
         return subAssistances.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<SubAssistanceOutputDTO> findAll(Long assistanceId , Pageable pageable){
-        Page<SubAssistance> subAssistances = ((SubAssistanceRepository) repository).findByAssistanceId(assistanceId , pageable);
+        Page<SubAssistance> subAssistances = repository.findByAssistanceId(assistanceId , pageable);
         return subAssistances.get().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Transactional
     public SubAssistanceOutputDTO update(Long assistanceId , Long subAssistanceId , SubAssistanceInputDTO inputDTO){
-        SubAssistance subAssistance = ((SubAssistanceRepository) repository)
+        SubAssistance subAssistance =  repository
                 .findByAssistanceIdAndSubAssistanceId(assistanceId, subAssistanceId);
         subAssistance.setTitle(inputDTO.getTitle());
         subAssistance.setDescription(inputDTO.getDescription());

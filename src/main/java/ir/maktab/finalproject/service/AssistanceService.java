@@ -5,6 +5,7 @@ import ir.maktab.finalproject.dto.output.AssistanceOutputDTO;
 import ir.maktab.finalproject.entity.Assistance;
 import ir.maktab.finalproject.entity.SubAssistance;
 import ir.maktab.finalproject.exception.AssistanceNotFoundException;
+import ir.maktab.finalproject.repository.AssistanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -17,13 +18,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class AssistanceService extends BaseService<Assistance,Long> {
+public class AssistanceService {
 
     @Autowired
-    @Qualifier("assistanceRepository")
-    protected void setRepository(JpaRepository<Assistance, Long> repository) {
-        this.repository = repository;
-    }
+    AssistanceRepository repository;
 
     @Transactional
     public AssistanceOutputDTO save(AssistanceInputDTO inputDTO){

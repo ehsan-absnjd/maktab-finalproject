@@ -2,14 +2,19 @@ package ir.maktab.finalproject.dto.output;
 
 import ir.maktab.finalproject.entity.Request;
 import ir.maktab.finalproject.entity.Specialist;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
-
+@Builder
+@Setter
+@Getter
 public class OfferOutputDTO {
 
     private Long id;
 
-    private Specialist specialist;
+    private long specialistId;
 
     private Date registerDate;
 
@@ -19,5 +24,5 @@ public class OfferOutputDTO {
 
     private Date beginning;
 
-    private Request request;
+    private Long requestId;
 }

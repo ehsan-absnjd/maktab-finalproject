@@ -27,16 +27,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class SpecialistService extends BaseService<Specialist,Long>{
+public class SpecialistService {
+
+    @Autowired
+    SpecialistRepository repository;
 
     @Autowired
     AssistanceRepository assistanceRepository;
-
-    @Autowired
-    @Qualifier("specialistRepository")
-    protected void setRepository(JpaRepository<Specialist, Long> repository) {
-        this.repository = repository;
-    }
 
     @Transactional
     public SpecialistOutputDTO save(SpecialistInputDTO inputDTO){
