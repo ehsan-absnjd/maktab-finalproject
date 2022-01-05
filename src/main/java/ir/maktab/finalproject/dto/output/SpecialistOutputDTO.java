@@ -4,14 +4,12 @@ import ir.maktab.finalproject.entity.UserStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.Date;
 
 @Builder
 @Setter
 @Getter
 public class SpecialistOutputDTO {
-
     private Long id;
 
     private String firstName;
@@ -19,8 +17,6 @@ public class SpecialistOutputDTO {
     private String lastName;
 
     private String email;
-
-    private String password;
 
     private Date registrationDate;
 
@@ -31,5 +27,4 @@ public class SpecialistOutputDTO {
     private String photoURL;
 
     private Double points;
-
 }

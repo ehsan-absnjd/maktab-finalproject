@@ -1,7 +1,6 @@
 package ir.maktab.finalproject.entity;
 
 import lombok.*;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -19,9 +18,11 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "subassistance_id")
     private SubAssistance subAssistance;

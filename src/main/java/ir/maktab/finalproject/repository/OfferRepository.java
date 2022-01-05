@@ -9,10 +9,11 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public interface OfferRepository extends JpaRepository<Offer,Long> {
     @Query("SELECT o FROM Offer o WHERE o.id =:offerId AND o.request.id=:requestId")
-    public Offer findByRequestIdAndOfferId(Long requestId, Long offerId);
+    public Optional<Offer> findByRequestIdAndOfferId(Long requestId, Long offerId);
 
     @Query("SELECT o FROM Offer o WHERE o.request.id=:requestId")
     public List<Offer> findByRequestId(Long requestId);

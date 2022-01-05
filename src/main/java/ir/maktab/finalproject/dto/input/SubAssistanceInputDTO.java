@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Getter
 public class SubAssistanceInputDTO {
-
     @NotNull
     private String title;
 
@@ -19,5 +18,4 @@ public class SubAssistanceInputDTO {
 
     @NotNull
     private String description;
-
 }

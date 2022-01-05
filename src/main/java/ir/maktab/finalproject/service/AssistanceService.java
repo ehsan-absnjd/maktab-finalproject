@@ -3,16 +3,12 @@ package ir.maktab.finalproject.service;
 import ir.maktab.finalproject.dto.input.AssistanceInputDTO;
 import ir.maktab.finalproject.dto.output.AssistanceOutputDTO;
 import ir.maktab.finalproject.entity.Assistance;
-import ir.maktab.finalproject.entity.SubAssistance;
 import ir.maktab.finalproject.exception.AssistanceNotFoundException;
 import ir.maktab.finalproject.repository.AssistanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -57,6 +53,11 @@ public class AssistanceService {
         return convertToDTO(saved);
     }
 
+    @Transactional
+    public void removeById(Long assistanceId){
+        repository.deleteById(assistanceId);
+    }
+
     public Assistance convertFromDTO(AssistanceInputDTO inputDTO){
         return Assistance.builder()
                 .title(inputDTO.getTitle())
@@ -69,5 +70,4 @@ public class AssistanceService {
                 .title(input.getTitle())
                 .build();
     }
-
 }

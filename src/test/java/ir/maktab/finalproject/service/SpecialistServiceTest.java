@@ -1,98 +1,165 @@
 package ir.maktab.finalproject.service;
 
 import ir.maktab.finalproject.TestConfig;
-import ir.maktab.finalproject.entity.Assistance;
-import ir.maktab.finalproject.entity.Customer;
+import ir.maktab.finalproject.TestHelper;
+import ir.maktab.finalproject.dto.input.AssistanceInputDTO;
+import ir.maktab.finalproject.dto.input.SpecialistInputDTO;
+import ir.maktab.finalproject.dto.output.AssistanceOutputDTO;
+import ir.maktab.finalproject.dto.output.SpecialistOutputDTO;
 import ir.maktab.finalproject.entity.Specialist;
 import ir.maktab.finalproject.entity.UserStatus;
+import ir.maktab.finalproject.exception.SpecialistNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 @DataJpaTest
 @SpringJUnitConfig(TestConfig.class)
 class SpecialistServiceTest {
-
     @Autowired
     SpecialistService service;
 
     @Autowired
     AssistanceService assistanceService;
 
+    @Autowired
+    TestHelper helper;
+
     @Test
     public void whenSavingNewSpecialist_shouldBeAbleToRetrieveIt(){
-        Specialist saved = saveSpecialistAndReturn();
-        Optional<Specialist> retrieved = service.findById(saved.getId());
-        assertNotNull(retrieved.get());
-        assertEquals(retrieved.get() , saved);
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        SpecialistOutputDTO saved = service.save(specialistInputDTO1);
+        SpecialistOutputDTO retrieved = service.findById(saved.getId());
+        helper.testEquality(specialistInputDTO1 , retrieved);
+    }
+
+    @Test
+    public void whenSavingNewSpecialist_RetrievedPasswordShouldBeOk() {
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        SpecialistOutputDTO saved = service.save(specialistInputDTO1);
+        Specialist specialist = service.getById(saved.getId());
+        assertEquals(specialistInputDTO1.getPassword(), specialist.getPassword());
     }
 
     @Test
     public void whenChangingPassword_shouldGetItRight(){
-        Specialist saved = saveSpecialistAndReturn();
-        service.changePassword(saved , "newpassword");
-        Optional<Specialist> retrieved = service.findById(saved.getId());
-        assertEquals(retrieved.get().getPassword() , "newpassword");
+        String newPassword = "newpass";
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        SpecialistOutputDTO saved = service.save(specialistInputDTO1);
+        service.changePassword(saved.getId(), newPassword);
+        Specialist specialist = service.getById(saved.getId());
+        assertEquals(specialist.getPassword() , newPassword);
+    }
+
+    @Test
+    public void whenSavingTwoSpecialists_shouldBeAbleToRetrievedThem(){
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        SpecialistInputDTO specialistInputDTO2 = helper.getSpecialistInputDTO2();
+        service.save(specialistInputDTO1);
+        service.save(specialistInputDTO2);
+        List<SpecialistOutputDTO> all1 = service.findAll();
+        List<SpecialistOutputDTO> all2 = service.findAll(PageRequest.of(0, 10));
+        assertEquals(2, all1.size() );
+        assertEquals(2 , all2.size());
+    }
+
+    @Test
+    public void whenChangingStatus_statusShouldBeUpdated(){
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        SpecialistOutputDTO saved = service.save(specialistInputDTO1);
+        service.changeStatus(saved.getId(), UserStatus.APPROVED);
+        SpecialistOutputDTO retrieved = service.findById(saved.getId());
+        assertEquals(retrieved.getStatus() , UserStatus.APPROVED);
+    }
+
+    @Test
+    public void whenUpdatingSpecialist_itsDataShouldBeUpdated(){
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        SpecialistInputDTO specialistInputDTO2 = helper.getSpecialistInputDTO2();
+        SpecialistOutputDTO saved = service.save(specialistInputDTO1);
+        service.update(saved.getId(), specialistInputDTO2);
+        SpecialistOutputDTO retrieved = service.findById(saved.getId());
+        helper.testEquality(specialistInputDTO2,retrieved);
+    }
+
+    @Test
+    public void whenGettingTheRemovedCustomer_shouldThrowException(){
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        SpecialistOutputDTO saved = service.save(specialistInputDTO1);
+        service.removeById(saved.getId());
+        assertThrows(SpecialistNotFoundException.class, ()->service.findById(saved.getId()) );
+    }
+
+    @Test
+    public void whenRetrievingByFirstName_shouldGetTheCorrectResult(){
+        String firstName = "faramarz";
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        specialistInputDTO1.setFirstName(firstName);
+        SpecialistInputDTO specialistInputDTO2 = helper.getSpecialistInputDTO2();
+        SpecialistOutputDTO target = service.save(specialistInputDTO1);
+        service.save(specialistInputDTO2);
+        List<SpecialistOutputDTO> retrieved = service.findByFirstName(firstName, PageRequest.of(0, 10));
+        assertEquals(1,retrieved.size());
+        helper.testEquality(target,retrieved.get(0));
+    }
+
+    @Test
+    public void whenRetrievingByLastName_shouldGetTheCorrectResult(){
+        String lastName = "alinejad";
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        specialistInputDTO1.setLastName(lastName);
+        SpecialistInputDTO specialistInputDTO2 = helper.getSpecialistInputDTO2();
+        SpecialistOutputDTO target = service.save(specialistInputDTO1);
+        service.save(specialistInputDTO2);
+        List<SpecialistOutputDTO> retrieved = service.findByLastName(lastName, PageRequest.of(0, 10));
+        assertEquals(1,retrieved.size());
+        helper.testEquality(target,retrieved.get(0));
+    }
+
+    @Test
+    public void whenRetrievingByEmail_shouldGetTheCorrectResult(){
+        String email = "somemail@mail.org";
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        specialistInputDTO1.setEmail(email);
+        SpecialistInputDTO specialistInputDTO2 = helper.getSpecialistInputDTO2();
+        SpecialistOutputDTO target = service.save(specialistInputDTO1);
+        service.save(specialistInputDTO2);
+        List<SpecialistOutputDTO> retrieved = service.findByEmail(email, PageRequest.of(0, 10));
+        assertEquals(1,retrieved.size());
+        helper.testEquality(target,retrieved.get(0));
     }
 
     @Test
     public void whenAddingAssistance_shouldBeAbleToRetrieve(){
-        Specialist saved = saveSpecialistAndReturn();
-        Assistance assistance = Assistance.builder().title("assistance1").build();
-        assistanceService.save(assistance);
-        service.addAssistance(saved,assistance);
-        Optional<Specialist> retrieved = service.findById(saved.getId());
-        assertTrue(retrieved.get().getAssistances().contains(assistance));
-
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        SpecialistOutputDTO target = service.save(specialistInputDTO1);
+        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceOutputDTO savedAssistance = assistanceService.save(assistanceInpputDTO1);
+        service.addAssistance(target.getId() , savedAssistance.getId());
+        SpecialistInputDTO specialistInputDTO2 = helper.getSpecialistInputDTO2();
+        service.save(specialistInputDTO2);
+        List<SpecialistOutputDTO> retrieved = service.findByAssistanceId(savedAssistance.getId(), PageRequest.of(0, 10));
+        assertEquals(1,retrieved.size());
+        helper.testEquality(target,retrieved.get(0));
     }
 
     @Test
-    public void whenSavingNewSpecialist_shouldBeAbleToRetrieveItByFirstName(){
-        Specialist saved = saveSpecialistAndReturn();
-        Page<Specialist> retrieved = service.findByFirstName(saved.getFirstName() , Pageable.ofSize(10) );
-        assertEquals(retrieved.get().findAny().get() , saved);
-    }
-
-    @Test
-    public void whenSavingNewSpecialist_shouldBeAbleToRetrieveItByLastName(){
-        Specialist saved = saveSpecialistAndReturn();
-        Page<Specialist> retrieved = service.findByLastName(saved.getLastName() , Pageable.ofSize(10) );
-        assertEquals(retrieved.get().findAny().get() , saved);
-    }
-
-    @Test
-    public void whenSavingNewSpecialist_shouldBeAbleToRetrieveItByEmail(){
-        Specialist saved = saveSpecialistAndReturn();
-        Page<Specialist> retrieved = service.findByEmail(saved.getEmail() , Pageable.ofSize(10) );
-        assertEquals(retrieved.get().findAny().get() , saved);
-    }
-
-    @Test
-    public void whenSavingNewSpecialist_shouldBeAbleToRetrieveItByAssistance(){
-        Specialist saved = saveSpecialistAndReturn();
-        Assistance assistance = Assistance.builder().title("assistance1").build();
-        Assistance savedAssistance = assistanceService.save(assistance);
-        service.addAssistance(saved,assistance);
-        Page<Specialist> retrieved = service.findByAssistanceId(assistance, Pageable.ofSize(10));
-        assertEquals(retrieved.get().findAny().get() , saved);
-    }
-
-    public Specialist saveSpecialistAndReturn(){
-        Specialist specialist = Specialist.builder().firstName("ali").lastName("reza")
-                .email("ali@rezaei.ir").password("12345678a")
-                .registrationDate(new Date()).status(UserStatus.NEW).credit(111d).build();
-        return service.save(specialist);
+    public void whenRemovingAssistance_shouldNotBeAbleToRetrieve(){
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        SpecialistOutputDTO target = service.save(specialistInputDTO1);
+        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceOutputDTO savedAssistance = assistanceService.save(assistanceInpputDTO1);
+        service.addAssistance(target.getId() , savedAssistance.getId());
+        service.removeAssistance(target.getId(), savedAssistance.getId());
+        List<SpecialistOutputDTO> retrieved = service.findByAssistanceId(savedAssistance.getId(), PageRequest.of(0, 10));
+        assertEquals(0,retrieved.size());
     }
 
 }

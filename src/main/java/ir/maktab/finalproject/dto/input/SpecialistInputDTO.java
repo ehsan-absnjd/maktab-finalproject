@@ -1,10 +1,8 @@
 package ir.maktab.finalproject.dto.input;
 
-import ir.maktab.finalproject.entity.UserStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -14,7 +12,6 @@ import javax.validation.constraints.Size;
 @Setter
 @Getter
 public class SpecialistInputDTO {
-
     @NotNull
     private String firstName;
 
@@ -30,13 +27,7 @@ public class SpecialistInputDTO {
     private String password;
 
     @NotNull
-    private UserStatus status;
-
-    @NotNull
     private Double credit;
 
     private String photoURL;
-
-    private Double points;
-
 }

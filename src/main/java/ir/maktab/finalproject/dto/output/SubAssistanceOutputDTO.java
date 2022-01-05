@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SubAssistanceOutputDTO {
-
     private Long id;
 
     private String title;
@@ -19,5 +18,4 @@ public class SubAssistanceOutputDTO {
     private String description;
 
     private Long assistanceId;
-
 }

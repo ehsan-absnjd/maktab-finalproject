@@ -1,14 +1,24 @@
 package ir.maktab.finalproject.service;
 
 import ir.maktab.finalproject.TestConfig;
+import ir.maktab.finalproject.TestHelper;
+import ir.maktab.finalproject.dto.input.*;
+import ir.maktab.finalproject.dto.output.*;
 import ir.maktab.finalproject.entity.*;
+import ir.maktab.finalproject.exception.InvalidSpecialistOfferException;
+import ir.maktab.finalproject.exception.OfferNotFoundException;
+import ir.maktab.finalproject.repository.SpecialistRepository;
+import ir.maktab.finalproject.repository.SubAssistanceRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @SpringJUnitConfig(TestConfig.class)
 class OfferServiceTest {
-
     @Autowired
     OfferService service;
 
@@ -30,38 +39,103 @@ class OfferServiceTest {
     @Autowired
     SpecialistService specialistService;
 
+    @Autowired
+    AssistanceService assistanceService;
+
+    @Autowired
+    SubAssistanceService subAssistanceService;
+
+    @Autowired
+    TestHelper helper;
+
+    Long customerId;
+    Long assistanceId;
+    Long subAssistanceId;
+    Long specialistId;
+    Long requestId;
+
+    @BeforeEach
+    public void setup(){
+        AssistanceInputDTO assistanceInputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceOutputDTO savedAssistance = assistanceService.save(assistanceInputDTO1);
+        assistanceId =savedAssistance.getId();
+        SubAssistanceInputDTO subAssistanceInputDTO1 = helper.getSubAssistanceInputDTO1();
+        SubAssistanceOutputDTO savedSubAssistance = subAssistanceService.save(assistanceId, subAssistanceInputDTO1);
+        subAssistanceId=savedSubAssistance.getId();
+        CustomerInputDTO customerInputDTO1 = helper.getCustomerInputDTO1();
+        CustomerOutputDTO savedCustomer = customerService.save(customerInputDTO1);
+        customerId = savedCustomer.getId();
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        SpecialistOutputDTO savedSpecialist = specialistService.save(specialistInputDTO1);
+        specialistId = savedSpecialist.getId();
+        specialistService.addAssistance(specialistId,assistanceId);
+        RequestInputDTO requestInputDTO2 = helper.getRequestInputDTO2(subAssistanceId, customerId);
+        RequestOutputDTO savedRequest = requestService.save(requestInputDTO2);
+        requestId=savedRequest.getId();
+    }
+
+    @Test
+    public void whenSavingOfferForSpecialistWithNotRelatedAssistance_shouldThrowException(){
+        specialistService.removeAssistance(specialistId ,assistanceId);
+        OfferInputDTO offerInputDTO1 = helper.getOfferInputDTO1(specialistId, 200000d);
+        assertThrows(InvalidSpecialistOfferException.class , ()-> service.save(requestId, offerInputDTO1));
+    }
+
     @Test
     public void whenSavingNewOffer_shouldBeAbleToRetrieveIt(){
-        Request request = saveRequestAndReturn();
-        Specialist specialist = saveSpecialistAndReturn();
-        Offer offer = Offer.builder().specialist(specialist).registerDate(new Date()).request(request).beginning(new Date())
-                .executionPeriod(1d).price(12d).build();
-        Offer saved = service.save(offer);
-        Optional<Offer> optional = service.findById(saved.getId());
-        assertNotNull(optional.get());
-        assertEquals(optional.get() , saved);
+        OfferInputDTO offerInputDTO1 = helper.getOfferInputDTO1(specialistId, 200000d);
+        OfferOutputDTO saved = service.save(requestId, offerInputDTO1);
+        OfferOutputDTO retrieved = service.findByRequestIdAndOfferId(requestId, saved.getId());
+        helper.testEquality(offerInputDTO1 , retrieved);
     }
 
-
-    public Customer saveCustomerAndReturn(){
-        Customer customer = Customer.builder().firstName("ali").lastName("reza")
-                .email("ali@rezaei.ir").password("12345678a")
-                .registrationDate(new Date()).status(UserStatus.NEW).credit(111d).build();
-        return customerService.save(customer);
+    @Test
+    public void whenSavingTwoOffers_shouldBeAbleToRetrieveThem(){
+        OfferInputDTO offerInputDTO1 = helper.getOfferInputDTO1(specialistId, 200000d);
+        OfferInputDTO offerInputDTO2 = helper.getOfferInputDTO2(specialistId, 300000d);
+        service.save(requestId, offerInputDTO1);
+        service.save(requestId , offerInputDTO2);
+        List<OfferOutputDTO> all1 = service.findByRequestId(requestId);
+        List<OfferOutputDTO> all2 = service.findByRequestId(requestId, PageRequest.of(0, 10));
+        List<OfferOutputDTO> all3 = service.findByRequestIdOrderByPointsDesc(requestId, PageRequest.of(0, 10));
+        List<OfferOutputDTO> all4 = service.findByRequestIdOrderByPriceAsc(requestId, PageRequest.of(0, 10));
+        assertEquals(2,all1.size());
+        assertEquals(2, all2.size());
+        assertEquals(2, all3.size());
+        assertEquals(2, all4.size());
     }
 
-    public Specialist saveSpecialistAndReturn(){
-        Specialist specialist = Specialist.builder().firstName("hoseyn").lastName("moharami")
-                .email("hoseyn@moharami.ir").password("12345678a")
-                .registrationDate(new Date()).status(UserStatus.NEW).credit(111d).build();
-        return specialistService.save(specialist);
+    @Test
+    public void whenUpdatingOffer_itsDataShouldBeUpdated(){
+        OfferInputDTO offerInputDTO1 = helper.getOfferInputDTO1(specialistId, 200000d);
+        OfferInputDTO offerInputDTO2 = helper.getOfferInputDTO2(specialistId, 300000d);
+        OfferOutputDTO saved = service.save(requestId, offerInputDTO1);
+        service.update(requestId, saved.getId() , offerInputDTO2);
+        OfferOutputDTO retrieved = service.findByRequestIdAndOfferId(requestId, saved.getId());
+        helper.testEquality(offerInputDTO2 , retrieved);
     }
 
-    public Request saveRequestAndReturn(){
-        Customer customer = saveCustomerAndReturn();
-        Request request = Request.builder().description("description").address("tehran").status(RequestStatus.WAITING_FOR_OFFERS)
-                .customer(customer).executionDate(new Date()).offeredPrice(13.5).registerDate(new Date()).build();
-        return requestService.save(request);
+    @Test
+    public void whenGettingDeletedOffer_shouldThrowException(){
+        OfferInputDTO offerInputDTO1 = helper.getOfferInputDTO1(specialistId, 200000d);
+        OfferOutputDTO saved = service.save(requestId, offerInputDTO1);
+        service.removeById(requestId,saved.getId());
+        assertThrows(OfferNotFoundException.class , ()->service.findByRequestIdAndOfferId(requestId, saved.getId()));
     }
 
+    @Test
+    public void whenSettlingRequest_customerAndSpecialistsBalanceShouldBeAsExpected(){
+        Double specialistCredit = specialistService.findById(specialistId).getCredit();
+        Double customerCredit = customerService.findById(customerId).getCredit();
+        Double offerPrice = 50000d;
+        OfferInputDTO offerInputDTO1 = helper.getOfferInputDTO1(specialistId, offerPrice);
+        OfferOutputDTO saved = service.save(requestId, offerInputDTO1);
+        requestService.selectOffer(requestId, saved.getId());
+        requestService.markBegun(requestId);
+        requestService.markDone(requestId);
+        requestService.settle(requestId, EvaluationInputDTO.builder().points(10d).comment("it was good").build());
+        assertEquals(specialistCredit+offerPrice , specialistService.findById(specialistId).getCredit() , .001);
+        assertEquals(customerCredit-offerPrice , customerService.findById(customerId).getCredit() , .001);
+        assertEquals(10d , specialistService.findById(specialistId).getPoints()  , .001 );
+    }
 }

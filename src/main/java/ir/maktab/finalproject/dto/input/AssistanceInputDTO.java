@@ -7,8 +7,6 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Getter
 public class AssistanceInputDTO {
-
     @NotNull
     private String title;
-
 }

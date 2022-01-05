@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-//@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "title"}) })
 @Setter
 @Getter
 @Builder

@@ -1,28 +1,24 @@
 package ir.maktab.finalproject.service;
 
-import ir.maktab.finalproject.dto.input.AssistanceInputDTO;
 import ir.maktab.finalproject.dto.input.SubAssistanceInputDTO;
 import ir.maktab.finalproject.dto.output.SubAssistanceOutputDTO;
 import ir.maktab.finalproject.entity.Assistance;
 import ir.maktab.finalproject.entity.SubAssistance;
 import ir.maktab.finalproject.exception.AssistanceNotFoundException;
+import ir.maktab.finalproject.exception.SubAssistanceNotFoundException;
 import ir.maktab.finalproject.repository.AssistanceRepository;
 import ir.maktab.finalproject.repository.SubAssistanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class SubAssistanceService{
-
     @Autowired
     SubAssistanceRepository repository;
 
@@ -34,15 +30,16 @@ public class SubAssistanceService{
         Optional<Assistance> optional = assistanceRepository.findById(assistanceId);
         Assistance assistance = optional.orElseThrow(() -> new AssistanceNotFoundException());
         SubAssistance subAssistance = convertFromDTO(inputDTO);
-        assistance.addSubAssistance(subAssistance);
-        assistanceRepository.save(assistance);
-        return convertToDTO(subAssistance);
+        subAssistance.setAssistance(assistance);
+        SubAssistance saved = repository.save(subAssistance);
+        return convertToDTO(saved);
     }
 
     @Transactional(readOnly = true)
     public SubAssistanceOutputDTO findById(Long assistanceId , Long subAssistanceId){
         SubAssistance subAssistance = repository
-                .findByAssistanceIdAndSubAssistanceId(assistanceId, subAssistanceId);
+                .findByAssistanceIdAndSubAssistanceId(assistanceId, subAssistanceId)
+                .orElseThrow(() -> new SubAssistanceNotFoundException());
         return convertToDTO(subAssistance);
     }
 
@@ -60,13 +57,22 @@ public class SubAssistanceService{
 
     @Transactional
     public SubAssistanceOutputDTO update(Long assistanceId , Long subAssistanceId , SubAssistanceInputDTO inputDTO){
-        SubAssistance subAssistance =  repository
-                .findByAssistanceIdAndSubAssistanceId(assistanceId, subAssistanceId);
+        SubAssistance subAssistance = repository
+                .findByAssistanceIdAndSubAssistanceId(assistanceId, subAssistanceId)
+                .orElseThrow(() -> new SubAssistanceNotFoundException());
         subAssistance.setTitle(inputDTO.getTitle());
         subAssistance.setDescription(inputDTO.getDescription());
         subAssistance.setBasePrice(inputDTO.getBasePrice());
         SubAssistance saved = repository.save(subAssistance);
         return convertToDTO(saved);
+    }
+
+    @Transactional
+    public void removeById(Long assistanceId , Long subAssistanceId){
+        SubAssistance subAssistance = repository
+                .findByAssistanceIdAndSubAssistanceId(assistanceId, subAssistanceId)
+                .orElseThrow(() -> new SubAssistanceNotFoundException());
+        repository.deleteById(subAssistance.getId());
     }
 
     public SubAssistance convertFromDTO(SubAssistanceInputDTO inputDTO){

@@ -2,11 +2,9 @@ package ir.maktab.finalproject.entity;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +15,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Specialist extends User {
-
     private String photoURL;
 
     private Double points;

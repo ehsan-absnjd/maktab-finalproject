@@ -7,19 +7,15 @@ import ir.maktab.finalproject.entity.UserStatus;
 import ir.maktab.finalproject.exception.CustomerNotFoundException;
 import ir.maktab.finalproject.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class CustomerService{
-
     @Autowired
     CustomerRepository repository;
 
@@ -28,6 +24,12 @@ public class CustomerService{
         Customer customer = convertFromDTO(inputDTO);
         Customer saved = repository.save(customer);
         return convertToDTO(saved);
+    }
+
+    @Transactional(readOnly = true)
+    public Customer getById(Long customerId){
+        Customer customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException());
+        return customer;
     }
 
     @Transactional(readOnly = true)
@@ -54,6 +56,15 @@ public class CustomerService{
         return convertToDTO(customer);
     }
 
+    @Transactional
+    public CustomerOutputDTO changeStatus(Long customerId , UserStatus status){
+        Customer customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException());
+        customer.setStatus(status);
+        repository.save(customer);
+        return convertToDTO(customer);
+    }
+
+    @Transactional
     public CustomerOutputDTO update(Long customerId , CustomerInputDTO inputDTO){
         Customer customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException());
         customer.setFirstName(inputDTO.getFirstName());
@@ -61,9 +72,14 @@ public class CustomerService{
         customer.setEmail(inputDTO.getEmail());
         customer.setPassword(inputDTO.getPassword());
         customer.setCredit(inputDTO.getCredit());
-        customer.setStatus(inputDTO.getStatus());
         repository.save(customer);
         return convertToDTO(customer);
+    }
+
+    @Transactional
+    public void removeById(Long customerId){
+        Customer customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException());
+        repository.delete(customer);
     }
 
     public Customer convertFromDTO(CustomerInputDTO inputDTO){
@@ -83,7 +99,7 @@ public class CustomerService{
                 .id(input.getId())
                 .firstName(input.getFirstName())
                 .lastName(input.getLastName())
-                .email(input.getPassword())
+                .email(input.getEmail())
                 .registrationDate(input.getRegistrationDate())
                 .status(input.getStatus())
                 .credit(input.getCredit())

@@ -1,10 +1,8 @@
 package ir.maktab.finalproject.dto.input;
 
-import ir.maktab.finalproject.entity.RequestStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -12,9 +10,11 @@ import java.util.Date;
 @Setter
 @Getter
 public class RequestInputDTO {
-
     @NotNull
     private Long subAssistanceId;
+
+    @NotNull
+    private Long customerId;
 
     @NotNull
     private Double offeredPrice;
@@ -27,5 +27,4 @@ public class RequestInputDTO {
 
     @NotNull
     private String address;
-
 }

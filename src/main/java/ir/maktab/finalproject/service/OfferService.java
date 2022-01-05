@@ -6,27 +6,21 @@ import ir.maktab.finalproject.entity.Offer;
 import ir.maktab.finalproject.entity.Request;
 import ir.maktab.finalproject.entity.RequestStatus;
 import ir.maktab.finalproject.entity.Specialist;
-import ir.maktab.finalproject.exception.InvalidOfferRegisterException;
-import ir.maktab.finalproject.exception.LowerThanBasePriceException;
-import ir.maktab.finalproject.exception.RequestNotFoundException;
-import ir.maktab.finalproject.exception.SpecialistNotFoundException;
+import ir.maktab.finalproject.exception.*;
 import ir.maktab.finalproject.repository.OfferRepository;
 import ir.maktab.finalproject.repository.RequestRepository;
 import ir.maktab.finalproject.repository.SpecialistRepository;
 import ir.maktab.finalproject.repository.SubAssistanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class OfferService {
-
     @Autowired
     OfferRepository repository;
 
@@ -47,6 +41,8 @@ public class OfferService {
             throw new LowerThanBasePriceException();
         if(request.getStatus()!= RequestStatus.WAITING_FOR_OFFERS && request.getStatus() != RequestStatus.WAITING_FOR_SELECT)
             throw new InvalidOfferRegisterException();
+        if (!offer.getSpecialist().getAssistances().contains(request.getSubAssistance().getAssistance()))
+            throw new InvalidSpecialistOfferException();
         offer.setRequest(request);
         request.setStatus(RequestStatus.WAITING_FOR_SELECT);
         Offer saved = repository.save(offer);
@@ -56,7 +52,7 @@ public class OfferService {
 
     @Transactional(readOnly = true)
     public OfferOutputDTO findByRequestIdAndOfferId(Long requestId , Long offerId){
-        Offer offer = repository.findByRequestIdAndOfferId(requestId, offerId);
+        Offer offer = repository.findByRequestIdAndOfferId(requestId, offerId).orElseThrow(()->new OfferNotFoundException());
         return convertToDTO(offer);
     }
 
@@ -84,9 +80,9 @@ public class OfferService {
                 .map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public OfferOutputDTO update(Long requestId , Long offerId , OfferInputDTO inputDTO){
-        Offer offer = repository.findByRequestIdAndOfferId(requestId, offerId);
+        Offer offer = repository.findByRequestIdAndOfferId(requestId, offerId).orElseThrow(()->new OfferNotFoundException());
         Specialist specialist = specialistRepository.findById(inputDTO.getSpecialistId())
                 .orElseThrow(() -> new SpecialistNotFoundException());
         offer.setSpecialist(specialist);
@@ -97,6 +93,12 @@ public class OfferService {
         return convertToDTO(saved);
     }
 
+    @Transactional
+    public void removeById(Long requestId, Long offerId){
+        Offer offer = repository.findByRequestIdAndOfferId(requestId, offerId).orElseThrow(()->new OfferNotFoundException());
+        //if (request.getStatus()==) some policy here
+        repository.delete(offer);
+    }
 
     private OfferOutputDTO convertToDTO(Offer input) {
         return OfferOutputDTO.builder()
@@ -121,6 +123,4 @@ public class OfferService {
         offer.setSpecialist(specialist);
         return offer;
     }
-
-
 }

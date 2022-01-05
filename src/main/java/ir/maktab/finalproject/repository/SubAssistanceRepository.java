@@ -7,11 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SubAssistanceRepository extends JpaRepository<SubAssistance , Long> {
 
     @Query("SELECT s FROM SubAssistance s WHERE s.id=:subAssistanceId AND s.assistance.id = :assistanceId")
-    public SubAssistance findByAssistanceIdAndSubAssistanceId(Long assistanceId, Long subAssistanceId);
+    public Optional<SubAssistance> findByAssistanceIdAndSubAssistanceId(Long assistanceId, Long subAssistanceId);
 
     @Query("SELECT s FROM SubAssistance s WHERE s.assistance.id = :assistanceId")
     public List<SubAssistance> findByAssistanceId(Long assistanceId);

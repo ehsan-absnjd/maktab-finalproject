@@ -34,11 +34,14 @@ public class RequestService {
     SubAssistanceRepository subAssistanceRepository;
 
     @Transactional
-    public RequestOutputDTO save(RequestInputDTO inputDTO, Long customerId){
-        Request request = convertFromDTO(inputDTO);
+    public RequestOutputDTO save(RequestInputDTO inputDTO){
         Customer customer = customerRepository
-                .findById(customerId).orElseThrow(() -> new CustomerNotFoundException());
+                .findById(inputDTO.getCustomerId()).orElseThrow(() -> new CustomerNotFoundException());
+        SubAssistance subAssistance = subAssistanceRepository
+                .findById(inputDTO.getSubAssistanceId()).orElseThrow(() -> new SubAssistanceNotFoundException());
+        Request request = convertFromDTO(inputDTO);
         request.setCustomer(customer);
+        request.setSubAssistance(subAssistance);
         Request saved = repository.save(request);
         return convertToDTO(saved);
     }
@@ -140,9 +143,12 @@ public class RequestService {
         return convertToDTO(saved);
     }
 
+    @Transactional
+    public void removeById(Long requestId){
+        repository.deleteById(requestId);
+    }
+
     public Request convertFromDTO(RequestInputDTO inputDTO){
-        SubAssistance subAssistance = subAssistanceRepository
-                .findById(inputDTO.getSubAssistanceId()).orElseThrow(() -> new SubAssistanceNotFoundException());
         Request request =  Request.builder()
                 .offeredPrice(inputDTO.getOfferedPrice())
                 .description(inputDTO.getDescription())
@@ -151,7 +157,6 @@ public class RequestService {
                 .status(RequestStatus.WAITING_FOR_OFFERS)
                 .registerDate(new Date())
                 .build();
-        request.setSubAssistance(subAssistance);
         return request;
     }
 
@@ -166,7 +171,7 @@ public class RequestService {
                 .executionDate(input.getExecutionDate())
                 .address(input.getAddress())
                 .status(input.getStatus())
-                .selectedOffer(input.getSelectedOffer().getId())
+                .selectedOffer(input.getSelectedOffer()!=null?input.getSelectedOffer().getId():null)
                 .points(input.getPoints())
                 .comment(input.getComment())
                 .build();

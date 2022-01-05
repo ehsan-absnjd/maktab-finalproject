@@ -1,18 +1,18 @@
 package ir.maktab.finalproject.service;
 
 import ir.maktab.finalproject.TestConfig;
-import ir.maktab.finalproject.entity.Assistance;
-import ir.maktab.finalproject.entity.SubAssistance;
+import ir.maktab.finalproject.TestHelper;
+import ir.maktab.finalproject.dto.input.AssistanceInputDTO;
+import ir.maktab.finalproject.dto.output.AssistanceOutputDTO;
 import ir.maktab.finalproject.exception.AssistanceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,81 +21,47 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @SpringJUnitConfig(TestConfig.class)
 class AssistanceServiceTest {
-
     @Autowired
     AssistanceService service;
 
-    @Test
-    public void whenSavingNewAssistance_shouldBeApleToRetrieveIt(){
-        Assistance assistance = saveNewAssistanceAndReturn();
-        Optional<Assistance> retrieved = service.findById(assistance.getId());
-        assertNotNull(retrieved.get());
-        assertEquals(assistance , retrieved.get());
-    }
+    @Autowired
+    TestHelper helper;
 
     @Test
-    public void whenSavingTwoAssistancesWithSameTitle_shouldThrow(){
-        saveNewAssistanceAndReturn();
-        saveNewAssistanceAndReturn();
-
-   //     System.out.println(service.findAll().stream().count());
-//        saveNewAssistanceAndReturn();
+    public void whenSavingNewAssistance_shouldBeAbleToRetrieveIt(){
+        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceOutputDTO saved = service.save(assistanceInpputDTO1);
+        AssistanceOutputDTO retrieved = service.findById(saved.getId());
+        assertEquals(assistanceInpputDTO1.getTitle() , retrieved.getTitle());
     }
 
     @Test
-    public void whenAddingSubAssistanceUsingId_shouldBeAbleToRetrieveIt(){
-        Long id = saveNewAssistanceAndReturn().getId();
-        SubAssistance subAssistance = SubAssistance.builder()
-                .title("shostoshu").description("description").basePrice(13.5).build();
-        SubAssistance subAssistance2 = SubAssistance.builder()
-                .title("shostoshu").description("description2").basePrice(143.5).build();
-        service.addSubAssistanceById(id,subAssistance);
-        service.addSubAssistanceById(id, subAssistance2);
-        Assistance assistance = service.findById(id).get();
-        assertTrue(contains(assistance.getSubAssistances() , subAssistance));
+    public void whenAddingTwoAssistances_shouldBeAbleToRetrieveThem(){
+        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceInputDTO assistanceInpputDTO2 = helper.getAssistanceInpputDTO2();
+        service.save(assistanceInpputDTO1);
+        service.save(assistanceInpputDTO2);
+        List<AssistanceOutputDTO> all1 = service.findAll();
+        List<AssistanceOutputDTO> all2 = service.findAll(PageRequest.of(0, 10));
+        assertEquals(2,all1.size());
+        assertEquals(2,all2.size());
     }
 
     @Test
-    public void whenAddingSubAssistanceUsingInstance_shouldBeAbleToRetrieveIt(){
-        Long id = saveNewAssistanceAndReturn().getId();
-        SubAssistance subAssistance = SubAssistance.builder()
-                .title("shostoshu").description("description").basePrice(13.5).build();
-        Assistance assistance = service.findById(id).get();
-        service.addSubAssistance(assistance,subAssistance);
-        assertEquals(assistance.getSubAssistances().stream().count() , 1);
-        assertTrue(contains(assistance.getSubAssistances() , subAssistance));
+    public void whenUpdatingAssistance_itsDataShouldBeUpdated(){
+        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceInputDTO assistanceInpputDTO2 = helper.getAssistanceInpputDTO2();
+        AssistanceOutputDTO saved = service.save(assistanceInpputDTO1);
+        service.update(saved.getId() , assistanceInpputDTO2);
+        AssistanceOutputDTO retrieved = service.findById(saved.getId());
+        assertEquals(assistanceInpputDTO2.getTitle() , retrieved.getTitle());
     }
 
     @Test
-    public void whenAddingTwoSubAssistanceWithSameTitleAndAssistanceId_shouldThrow(){
-        Long id = saveNewAssistanceAndReturn().getId();
-        SubAssistance subAssistance = SubAssistance.builder()
-                .title("shostoshu").description("description").basePrice(13.5).build();
-        SubAssistance subAssistance2 = SubAssistance.builder()
-                .title("shostoshu").description("description2").basePrice(143.5).build();
-        service.addSubAssistanceById(id,subAssistance);
-        service.addSubAssistanceById(id, subAssistance2);
+    public void whenRemovingAssistance_shouldThrowException(){
+        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceOutputDTO saved = service.save(assistanceInpputDTO1);
+        service.removeById(saved.getId());
+        assertThrows(AssistanceNotFoundException.class ,()->service.findById(saved.getId()));
     }
-
-    @Test
-    public void whenAddingSubAssistanceForUnValidAssistanceId_shouldThrowAssistanceNotFoundException(){
-        SubAssistance subAssistance = SubAssistance.builder()
-                .title("shostoshu").description("description").basePrice(13.5).build();
-        assertThrows(AssistanceNotFoundException.class , ()->service.addSubAssistanceById(2l,subAssistance));
-    }
-
-    public Assistance saveNewAssistanceAndReturn(){
-        Assistance assistance = Assistance.builder().title("behdasht").build();
-        return service.save(assistance);
-    }
-
-    public boolean contains(Set<SubAssistance> set , SubAssistance sa){
-        for (SubAssistance a:set) {
-            if (a.getTitle().equals(sa.getTitle()) && a.getDescription().equals(sa.getDescription()) && a.getBasePrice().equals(sa.getBasePrice()))
-                return true;
-        }
-        return false;
-    }
-
-
 }

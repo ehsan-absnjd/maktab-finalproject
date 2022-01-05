@@ -8,9 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class AssistanceOutputDTO {
-
     private Long id;
 
     private String title;
-
 }

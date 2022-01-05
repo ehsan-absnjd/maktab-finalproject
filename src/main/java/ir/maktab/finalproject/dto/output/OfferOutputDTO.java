@@ -1,7 +1,5 @@
 package ir.maktab.finalproject.dto.output;
 
-import ir.maktab.finalproject.entity.Request;
-import ir.maktab.finalproject.entity.Specialist;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +9,6 @@ import java.util.Date;
 @Setter
 @Getter
 public class OfferOutputDTO {
-
     private Long id;
 
     private long specialistId;
