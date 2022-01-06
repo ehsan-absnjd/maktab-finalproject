@@ -8,6 +8,7 @@ import ir.maktab.finalproject.exception.AssistanceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -29,7 +30,7 @@ class AssistanceServiceTest {
 
     @Test
     public void whenSavingNewAssistance_shouldBeAbleToRetrieveIt(){
-        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInputDTO1();
         AssistanceOutputDTO saved = service.save(assistanceInpputDTO1);
         AssistanceOutputDTO retrieved = service.findById(saved.getId());
         assertEquals(assistanceInpputDTO1.getTitle() , retrieved.getTitle());
@@ -37,8 +38,8 @@ class AssistanceServiceTest {
 
     @Test
     public void whenAddingTwoAssistances_shouldBeAbleToRetrieveThem(){
-        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInpputDTO1();
-        AssistanceInputDTO assistanceInpputDTO2 = helper.getAssistanceInpputDTO2();
+        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInputDTO1();
+        AssistanceInputDTO assistanceInpputDTO2 = helper.getAssistanceInputDTO2();
         service.save(assistanceInpputDTO1);
         service.save(assistanceInpputDTO2);
         List<AssistanceOutputDTO> all1 = service.findAll();
@@ -49,8 +50,8 @@ class AssistanceServiceTest {
 
     @Test
     public void whenUpdatingAssistance_itsDataShouldBeUpdated(){
-        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInpputDTO1();
-        AssistanceInputDTO assistanceInpputDTO2 = helper.getAssistanceInpputDTO2();
+        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInputDTO1();
+        AssistanceInputDTO assistanceInpputDTO2 = helper.getAssistanceInputDTO2();
         AssistanceOutputDTO saved = service.save(assistanceInpputDTO1);
         service.update(saved.getId() , assistanceInpputDTO2);
         AssistanceOutputDTO retrieved = service.findById(saved.getId());
@@ -59,7 +60,7 @@ class AssistanceServiceTest {
 
     @Test
     public void whenRemovingAssistance_shouldThrowException(){
-        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInputDTO1();
         AssistanceOutputDTO saved = service.save(assistanceInpputDTO1);
         service.removeById(saved.getId());
         assertThrows(AssistanceNotFoundException.class ,()->service.findById(saved.getId()));

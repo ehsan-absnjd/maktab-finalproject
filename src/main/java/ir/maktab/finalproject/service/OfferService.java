@@ -100,7 +100,7 @@ public class OfferService {
         repository.delete(offer);
     }
 
-    private OfferOutputDTO convertToDTO(Offer input) {
+    public OfferOutputDTO convertToDTO(Offer input) {
         return OfferOutputDTO.builder()
                 .id(input.getId())
                 .specialistId(input.getSpecialist().getId())

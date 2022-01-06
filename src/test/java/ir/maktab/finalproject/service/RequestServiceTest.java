@@ -54,7 +54,7 @@ class RequestServiceTest {
 
     @BeforeEach
     public void setup(){
-        AssistanceInputDTO assistanceInputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceInputDTO assistanceInputDTO1 = helper.getAssistanceInputDTO1();
         AssistanceOutputDTO savedAssistance = assistanceService.save(assistanceInputDTO1);
         assistanceId =savedAssistance.getId();
         SubAssistanceInputDTO subAssistanceInputDTO1 = helper.getSubAssistanceInputDTO1();

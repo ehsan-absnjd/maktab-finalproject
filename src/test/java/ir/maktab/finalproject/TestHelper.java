@@ -2,15 +2,11 @@ package ir.maktab.finalproject;
 
 import ir.maktab.finalproject.dto.input.*;
 import ir.maktab.finalproject.dto.output.*;
-import ir.maktab.finalproject.entity.Specialist;
-import org.springframework.stereotype.Component;
-import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Component
 public class TestHelper {
     public CustomerInputDTO getCustomerInputDTO1(){
         return CustomerInputDTO.builder()
@@ -41,13 +37,13 @@ public class TestHelper {
                 .build();
     }
 
-    public AssistanceInputDTO getAssistanceInpputDTO1(){
+    public AssistanceInputDTO getAssistanceInputDTO1(){
         return AssistanceInputDTO.builder()
                 .title("title1")
                 .build();
     }
 
-    public AssistanceInputDTO getAssistanceInpputDTO2(){
+    public AssistanceInputDTO getAssistanceInputDTO2(){
         return AssistanceInputDTO.builder()
                 .title("title2")
                 .build();

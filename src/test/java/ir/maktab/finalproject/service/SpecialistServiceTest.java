@@ -90,7 +90,7 @@ class SpecialistServiceTest {
     }
 
     @Test
-    public void whenGettingTheRemovedCustomer_shouldThrowException(){
+    public void whenGettingTheRemovedSpecialist_shouldThrowException(){
         SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
         SpecialistOutputDTO saved = service.save(specialistInputDTO1);
         service.removeById(saved.getId());
@@ -140,21 +140,24 @@ class SpecialistServiceTest {
     public void whenAddingAssistance_shouldBeAbleToRetrieve(){
         SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
         SpecialistOutputDTO target = service.save(specialistInputDTO1);
-        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInputDTO1();
         AssistanceOutputDTO savedAssistance = assistanceService.save(assistanceInpputDTO1);
         service.addAssistance(target.getId() , savedAssistance.getId());
         SpecialistInputDTO specialistInputDTO2 = helper.getSpecialistInputDTO2();
         service.save(specialistInputDTO2);
         List<SpecialistOutputDTO> retrieved = service.findByAssistanceId(savedAssistance.getId(), PageRequest.of(0, 10));
+        List<AssistanceOutputDTO> bySpecialistId = assistanceService.findBySpecialistId(target.getId());
         assertEquals(1,retrieved.size());
         helper.testEquality(target,retrieved.get(0));
+        assertEquals(1, bySpecialistId.size());
+        assertEquals(assistanceInpputDTO1.getTitle() , bySpecialistId.get(0).getTitle());
     }
 
     @Test
     public void whenRemovingAssistance_shouldNotBeAbleToRetrieve(){
         SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
         SpecialistOutputDTO target = service.save(specialistInputDTO1);
-        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInputDTO1();
         AssistanceOutputDTO savedAssistance = assistanceService.save(assistanceInpputDTO1);
         service.addAssistance(target.getId() , savedAssistance.getId());
         service.removeAssistance(target.getId(), savedAssistance.getId());

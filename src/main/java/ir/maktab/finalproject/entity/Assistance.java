@@ -37,17 +37,4 @@ public class Assistance {
         subAssistances.remove(subAssistance);
         subAssistance.setAssistance(null);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Assistance that = (Assistance) o;
-        return Objects.equals(id, that.id) && Objects.equals(title, that.title);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title);
-    }
 }

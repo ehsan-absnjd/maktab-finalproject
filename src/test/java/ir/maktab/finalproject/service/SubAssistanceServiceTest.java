@@ -6,10 +6,7 @@ import ir.maktab.finalproject.dto.input.AssistanceInputDTO;
 import ir.maktab.finalproject.dto.input.SubAssistanceInputDTO;
 import ir.maktab.finalproject.dto.output.AssistanceOutputDTO;
 import ir.maktab.finalproject.dto.output.SubAssistanceOutputDTO;
-import ir.maktab.finalproject.entity.Assistance;
-import ir.maktab.finalproject.entity.SubAssistance;
 import ir.maktab.finalproject.exception.SubAssistanceNotFoundException;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,7 +36,7 @@ class SubAssistanceServiceTest {
 
     @BeforeEach
     public void setup(){
-        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceInputDTO assistanceInpputDTO1 = helper.getAssistanceInputDTO1();
         AssistanceOutputDTO saved = assistanceService.save(assistanceInpputDTO1);
         assistanceId = saved.getId();
     }

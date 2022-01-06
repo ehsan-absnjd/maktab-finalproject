@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class RequestService {
-
     @Autowired
     RequestRepository repository;
 

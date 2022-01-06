@@ -7,8 +7,6 @@ import ir.maktab.finalproject.dto.output.*;
 import ir.maktab.finalproject.entity.*;
 import ir.maktab.finalproject.exception.InvalidSpecialistOfferException;
 import ir.maktab.finalproject.exception.OfferNotFoundException;
-import ir.maktab.finalproject.repository.SpecialistRepository;
-import ir.maktab.finalproject.repository.SubAssistanceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -56,7 +52,7 @@ class OfferServiceTest {
 
     @BeforeEach
     public void setup(){
-        AssistanceInputDTO assistanceInputDTO1 = helper.getAssistanceInpputDTO1();
+        AssistanceInputDTO assistanceInputDTO1 = helper.getAssistanceInputDTO1();
         AssistanceOutputDTO savedAssistance = assistanceService.save(assistanceInputDTO1);
         assistanceId =savedAssistance.getId();
         SubAssistanceInputDTO subAssistanceInputDTO1 = helper.getSubAssistanceInputDTO1();
@@ -121,6 +117,29 @@ class OfferServiceTest {
         OfferOutputDTO saved = service.save(requestId, offerInputDTO1);
         service.removeById(requestId,saved.getId());
         assertThrows(OfferNotFoundException.class , ()->service.findByRequestIdAndOfferId(requestId, saved.getId()));
+    }
+
+    @Test
+    public void newlyCreatedRequest_shouldHaveWaitingForOffersStatus(){
+        RequestOutputDTO request = requestService.findById(requestId);
+        assertEquals(RequestStatus.WAITING_FOR_OFFERS , request.getStatus());
+    }
+
+    @Test
+    public void whenAddingOfferForRequest_itsStatusShouldBeWaitingForSelect(){
+        OfferInputDTO offerInputDTO1 = helper.getOfferInputDTO1(specialistId, 5000d);
+        service.save(requestId , offerInputDTO1);
+        RequestOutputDTO request = requestService.findById(requestId);
+        assertEquals(RequestStatus.WAITING_FOR_SELECT , request.getStatus());
+    }
+
+    @Test
+    public void whenSelectingOffer_itsStatusShouldBeWaitingForArrival(){
+        OfferInputDTO offerInputDTO1 = helper.getOfferInputDTO1(specialistId, 5000d);
+        OfferOutputDTO saved = service.save(requestId, offerInputDTO1);
+        requestService.selectOffer(requestId , saved.getId());
+        RequestOutputDTO request = requestService.findById(requestId);
+        assertEquals(RequestStatus.WAITING_ARRIVAL , request.getStatus());
     }
 
     @Test

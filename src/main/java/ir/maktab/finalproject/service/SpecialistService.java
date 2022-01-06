@@ -55,22 +55,22 @@ public class SpecialistService {
     }
 
     @Transactional(readOnly = true)
-    List<SpecialistOutputDTO> findByFirstName(String firstName, Pageable pageable){
+    public List<SpecialistOutputDTO> findByFirstName(String firstName, Pageable pageable){
         return repository.findByFirstName(firstName, pageable).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    List<SpecialistOutputDTO> findByLastName(String lastName, Pageable pageable){
+    public List<SpecialistOutputDTO> findByLastName(String lastName, Pageable pageable){
         return repository.findByLastName(lastName,pageable).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    List<SpecialistOutputDTO> findByEmail(String email, Pageable pageable){
+    public List<SpecialistOutputDTO> findByEmail(String email, Pageable pageable){
         return repository.findByEmail(email, pageable).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    List<SpecialistOutputDTO> findByAssistanceId(Long assistanceId , Pageable pageable) {
+    public List<SpecialistOutputDTO> findByAssistanceId(Long assistanceId , Pageable pageable) {
         Assistance assistance = assistanceRepository.findById(assistanceId).orElseThrow(() -> new AssistanceNotFoundException());
         return  repository.findByAssistanceId(assistance, pageable).stream().map(this::convertToDTO).collect(Collectors.toList());
     }

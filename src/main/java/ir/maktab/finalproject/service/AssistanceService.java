@@ -4,7 +4,9 @@ import ir.maktab.finalproject.dto.input.AssistanceInputDTO;
 import ir.maktab.finalproject.dto.output.AssistanceOutputDTO;
 import ir.maktab.finalproject.entity.Assistance;
 import ir.maktab.finalproject.exception.AssistanceNotFoundException;
+import ir.maktab.finalproject.exception.SpecialistNotFoundException;
 import ir.maktab.finalproject.repository.AssistanceRepository;
+import ir.maktab.finalproject.repository.SpecialistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ public class AssistanceService {
     @Autowired
     AssistanceRepository repository;
 
+    @Autowired
+    SpecialistRepository specialistRepository;
+
     @Transactional
     public AssistanceOutputDTO save(AssistanceInputDTO inputDTO){
         Assistance assistance = convertFromDTO(inputDTO);
@@ -31,6 +36,12 @@ public class AssistanceService {
         Optional<Assistance> optional = repository.findById(id);
         Assistance assistance = optional.orElseThrow(()-> new AssistanceNotFoundException());
         return convertToDTO(assistance);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AssistanceOutputDTO> findBySpecialistId(Long specialistId){
+        return specialistRepository.findById(specialistId).orElseThrow(()->new SpecialistNotFoundException())
+                .getAssistances().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
