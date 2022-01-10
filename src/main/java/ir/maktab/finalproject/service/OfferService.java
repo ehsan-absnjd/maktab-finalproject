@@ -13,6 +13,7 @@ import ir.maktab.finalproject.repository.SpecialistRepository;
 import ir.maktab.finalproject.repository.SubAssistanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
@@ -70,14 +71,18 @@ public class OfferService {
 
     @Transactional(readOnly = true)
     public List<OfferOutputDTO> findByRequestIdOrderByPointsDesc(Long requestId , Pageable pageable){
-        return repository.findByRequestIdOrderByPointsDesc(requestId, pageable).stream()
-                .map(this::convertToDTO).collect(Collectors.toList());
+        return repository.findAll((r,q,cb)-> {
+            q.orderBy(cb.desc(r.get("specialist").get("points") ));
+            return cb.equal(r.get("request").get("id"), requestId);}, pageable )
+                .stream().map(this::convertToDTO).collect(Collectors.toList()) ;
     }
 
     @Transactional(readOnly = true)
     public List<OfferOutputDTO> findByRequestIdOrderByPriceAsc(Long requestId , Pageable pageable){
-        return repository.findByRequestIdOrderByPriceAsc(requestId, pageable).stream()
-                .map(this::convertToDTO).collect(Collectors.toList());
+        return repository.findAll((r,q,cb)-> {
+            q.orderBy(cb.asc(r.get("price") ));
+            return cb.equal(r.get("request").get("id"), requestId);}, pageable )
+                .stream().map(this::convertToDTO).collect(Collectors.toList()) ;
     }
 
     @Transactional

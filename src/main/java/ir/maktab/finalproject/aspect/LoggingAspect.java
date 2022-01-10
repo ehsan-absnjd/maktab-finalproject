@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 @Profile("!test")
 @Aspect
 @Component
@@ -18,13 +21,15 @@ public class LoggingAspect {
             "execution(* ir.maktab.finalproject.util.*.*(..)) || " +
             "execution(* ir.maktab.finalproject.controller.*.*(..) ) )")
     public void logServicePackage(ProceedingJoinPoint jp )  {
-        logger.info("Before method: " + jp.getSignature().getName());
+        String params = Arrays.stream(jp.getArgs()).map(Object::toString).collect( Collectors.joining( "," ) );
+        logger.info("Before method: " +jp.getSignature().getDeclaringTypeName()+"." + jp.getSignature().getName()+"("+ params+")");
+        Object proceed=null;
         try {
-            Object proceed = jp.proceed();
+            proceed = jp.proceed();
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        logger.debug("After method: " + jp.getSignature().getName());
+        logger.debug("After method: "+jp.getSignature().getDeclaringTypeName()+"."+ jp.getSignature().getName() +":"+ proceed);
     }
 
 }

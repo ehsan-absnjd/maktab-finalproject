@@ -1,0 +1,94 @@
+693  [main] INFO  i.m.f.FinalProjectApplication - Starting FinalProjectApplication using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 8868 (C:\Users\Frequency\Desktop\Project\FinalProject\target\classes started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+696  [main] DEBUG i.m.f.FinalProjectApplication - Running with Spring Boot v2.6.2, Spring v5.3.14
+696  [main] INFO  i.m.f.FinalProjectApplication - No active profile set, falling back to default profiles: default
+5429 [main] INFO  i.m.f.FinalProjectApplication - Started FinalProjectApplication in 5.125 seconds (JVM running for 6.455)
+17144 [http-nio-8080-exec-1] INFO  i.m.f.aspect.LoggingAspect - Before method: findAll
+17189 [http-nio-8080-exec-1] DEBUG i.m.f.aspect.LoggingAspect - After method: findAll
+824  [main] INFO  i.m.f.FinalProjectApplication - Starting FinalProjectApplication using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 18912 (C:\Users\Frequency\Desktop\Project\FinalProject\target\classes started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+827  [main] DEBUG i.m.f.FinalProjectApplication - Running with Spring Boot v2.6.2, Spring v5.3.14
+828  [main] INFO  i.m.f.FinalProjectApplication - No active profile set, falling back to default profiles: default
+5664 [main] INFO  i.m.f.FinalProjectApplication - Started FinalProjectApplication in 5.279 seconds (JVM running for 6.697)
+9653 [http-nio-8080-exec-1] INFO  i.m.f.aspect.LoggingAspect - Before method: loggertest
+9665 [http-nio-8080-exec-1] INFO  i.m.f.aspect.LoggingAspect - Before method: findAll
+9703 [http-nio-8080-exec-1] DEBUG i.m.f.aspect.LoggingAspect - After method: findAll
+9704 [http-nio-8080-exec-1] DEBUG i.m.f.aspect.LoggingAspect - After method: loggertest
+1054 [main] INFO  i.m.f.FinalProjectApplicationTests - Starting FinalProjectApplicationTests using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 7820 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1054 [main] DEBUG i.m.f.FinalProjectApplicationTests - Running with Spring Boot v2.6.2, Spring v5.3.14
+1054 [main] INFO  i.m.f.FinalProjectApplicationTests - No active profile set, falling back to default profiles: default
+9903 [main] INFO  i.m.f.FinalProjectApplicationTests - Started FinalProjectApplicationTests in 9.18 seconds (JVM running for 10.985)
+10279 [main] INFO  i.m.f.service.AssistanceServiceTest - Starting AssistanceServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 7820 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+10279 [main] DEBUG i.m.f.service.AssistanceServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+10280 [main] INFO  i.m.f.service.AssistanceServiceTest - The following profiles are active: test
+11480 [main] INFO  i.m.f.service.AssistanceServiceTest - Started AssistanceServiceTest in 1.256 seconds (JVM running for 12.562)
+811  [main] INFO  i.m.f.FinalProjectApplication - Starting FinalProjectApplication using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 4220 (C:\Users\Frequency\Desktop\Project\FinalProject\target\classes started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+813  [main] DEBUG i.m.f.FinalProjectApplication - Running with Spring Boot v2.6.2, Spring v5.3.14
+814  [main] INFO  i.m.f.FinalProjectApplication - No active profile set, falling back to default profiles: default
+6851 [main] INFO  i.m.f.FinalProjectApplication - Started FinalProjectApplication in 6.543 seconds (JVM running for 8.202)
+22000 [http-nio-8080-exec-1] INFO  i.m.f.aspect.LoggingAspect - Before method: loggertest
+22013 [http-nio-8080-exec-1] INFO  i.m.f.aspect.LoggingAspect - Before method: findAll
+22052 [http-nio-8080-exec-1] DEBUG i.m.f.aspect.LoggingAspect - After method: findAll
+22053 [http-nio-8080-exec-1] DEBUG i.m.f.aspect.LoggingAspect - After method: loggertest
+737  [main] INFO  i.m.f.FinalProjectApplication - Starting FinalProjectApplication using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 16820 (C:\Users\Frequency\Desktop\Project\FinalProject\target\classes started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+738  [main] DEBUG i.m.f.FinalProjectApplication - Running with Spring Boot v2.6.2, Spring v5.3.14
+738  [main] INFO  i.m.f.FinalProjectApplication - No active profile set, falling back to default profiles: default
+6407 [main] INFO  i.m.f.FinalProjectApplication - Started FinalProjectApplication in 6.096 seconds (JVM running for 7.676)
+1192 [main] INFO  i.m.f.service.OfferServiceTest - Starting OfferServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 2256 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1193 [main] DEBUG i.m.f.service.OfferServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+1193 [main] INFO  i.m.f.service.OfferServiceTest - The following profiles are active: test
+7531 [main] INFO  i.m.f.service.OfferServiceTest - Started OfferServiceTest in 6.804 seconds (JVM running for 8.691)
+1192 [main] INFO  i.m.f.service.OfferServiceTest - Starting OfferServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 11744 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1193 [main] DEBUG i.m.f.service.OfferServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+1193 [main] INFO  i.m.f.service.OfferServiceTest - The following profiles are active: test
+7181 [main] INFO  i.m.f.service.OfferServiceTest - Started OfferServiceTest in 6.496 seconds (JVM running for 8.106)
+1121 [main] INFO  i.m.f.service.OfferServiceTest - Starting OfferServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 18660 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1122 [main] DEBUG i.m.f.service.OfferServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+1122 [main] INFO  i.m.f.service.OfferServiceTest - The following profiles are active: test
+6778 [main] INFO  i.m.f.service.OfferServiceTest - Started OfferServiceTest in 6.179 seconds (JVM running for 7.695)
+1148 [main] INFO  i.m.f.service.OfferServiceTest - Starting OfferServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 2960 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1149 [main] DEBUG i.m.f.service.OfferServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+1149 [main] INFO  i.m.f.service.OfferServiceTest - The following profiles are active: test
+6129 [main] INFO  i.m.f.service.OfferServiceTest - Started OfferServiceTest in 5.486 seconds (JVM running for 6.974)
+1547 [main] INFO  i.m.f.FinalProjectApplicationTests - Starting FinalProjectApplicationTests using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 10732 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1548 [main] DEBUG i.m.f.FinalProjectApplicationTests - Running with Spring Boot v2.6.2, Spring v5.3.14
+1548 [main] INFO  i.m.f.FinalProjectApplicationTests - No active profile set, falling back to default profiles: default
+12443 [main] INFO  i.m.f.FinalProjectApplicationTests - Started FinalProjectApplicationTests in 11.395 seconds (JVM running for 13.698)
+12736 [main] INFO  i.m.f.service.AssistanceServiceTest - Starting AssistanceServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 10732 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+12736 [main] DEBUG i.m.f.service.AssistanceServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+12736 [main] INFO  i.m.f.service.AssistanceServiceTest - The following profiles are active: test
+14402 [main] INFO  i.m.f.service.AssistanceServiceTest - Started AssistanceServiceTest in 1.712 seconds (JVM running for 15.657)
+1397 [main] INFO  i.m.f.service.SpecialistServiceTest - Starting SpecialistServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 3604 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1398 [main] DEBUG i.m.f.service.SpecialistServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+1398 [main] INFO  i.m.f.service.SpecialistServiceTest - The following profiles are active: test
+7703 [main] INFO  i.m.f.service.SpecialistServiceTest - Started SpecialistServiceTest in 6.884 seconds (JVM running for 9.526)
+8847 [main] INFO  i.m.f.FinalProjectApplicationTests - Starting FinalProjectApplicationTests using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 3604 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+8847 [main] DEBUG i.m.f.FinalProjectApplicationTests - Running with Spring Boot v2.6.2, Spring v5.3.14
+8847 [main] INFO  i.m.f.FinalProjectApplicationTests - No active profile set, falling back to default profiles: default
+12696 [main] INFO  i.m.f.FinalProjectApplicationTests - Started FinalProjectApplicationTests in 3.92 seconds (JVM running for 14.519)
+1268 [main] INFO  i.m.f.service.OfferServiceTest - Starting OfferServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 10364 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1268 [main] DEBUG i.m.f.service.OfferServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+1269 [main] INFO  i.m.f.service.OfferServiceTest - The following profiles are active: test
+7998 [main] INFO  i.m.f.service.OfferServiceTest - Started OfferServiceTest in 7.259 seconds (JVM running for 9.273)
+1241 [main] INFO  i.m.f.service.OfferServiceTest - Starting OfferServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 11376 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1242 [main] DEBUG i.m.f.service.OfferServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+1242 [main] INFO  i.m.f.service.OfferServiceTest - The following profiles are active: test
+7257 [main] INFO  i.m.f.service.OfferServiceTest - Started OfferServiceTest in 6.564 seconds (JVM running for 8.146)
+1160 [main] INFO  i.m.f.service.OfferServiceTest - Starting OfferServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 12836 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1161 [main] DEBUG i.m.f.service.OfferServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+1161 [main] INFO  i.m.f.service.OfferServiceTest - The following profiles are active: test
+6775 [main] INFO  i.m.f.service.OfferServiceTest - Started OfferServiceTest in 6.125 seconds (JVM running for 7.665)
+1172 [main] INFO  i.m.f.service.OfferServiceTest - Starting OfferServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 6728 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1173 [main] DEBUG i.m.f.service.OfferServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+1173 [main] INFO  i.m.f.service.OfferServiceTest - The following profiles are active: test
+7150 [main] INFO  i.m.f.service.OfferServiceTest - Started OfferServiceTest in 6.471 seconds (JVM running for 8.208)
+1132 [main] INFO  i.m.f.service.OfferServiceTest - Starting OfferServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 10396 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1132 [main] DEBUG i.m.f.service.OfferServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+1133 [main] INFO  i.m.f.service.OfferServiceTest - The following profiles are active: test
+6776 [main] INFO  i.m.f.service.OfferServiceTest - Started OfferServiceTest in 6.144 seconds (JVM running for 7.628)
+1132 [main] INFO  i.m.f.service.OfferServiceTest - Starting OfferServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 9132 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1133 [main] DEBUG i.m.f.service.OfferServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+1133 [main] INFO  i.m.f.service.OfferServiceTest - The following profiles are active: test
+6867 [main] INFO  i.m.f.service.OfferServiceTest - Started OfferServiceTest in 6.222 seconds (JVM running for 7.77)
+1144 [main] INFO  i.m.f.service.OfferServiceTest - Starting OfferServiceTest using Java 1.8.0_20-ea on DESKTOP-M2F68MH with PID 13404 (started by Frequency in C:\Users\Frequency\Desktop\Project\FinalProject)
+1145 [main] DEBUG i.m.f.service.OfferServiceTest - Running with Spring Boot v2.6.2, Spring v5.3.14
+1145 [main] INFO  i.m.f.service.OfferServiceTest - The following profiles are active: test
+6731 [main] INFO  i.m.f.service.OfferServiceTest - Started OfferServiceTest in 6.113 seconds (JVM running for 7.558)

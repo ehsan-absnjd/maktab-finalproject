@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,7 +78,7 @@ public class RequestService {
     @Transactional
     public RequestOutputDTO selectOffer(Long requestId, Long offerId){
         Offer offer = offerRepository.findById(offerId).orElseThrow(() -> new OfferNotFoundException());
-        if(offer.getRequest().getId()!=requestId)
+        if(!Objects.equals(offer.getRequest().getId(), requestId))
             throw new InvalidOfferSelectionException();
         Request request = repository.findById(requestId).orElseThrow(() -> new RequestNotFoundException());
         if(request.getCustomer().getCredit()<offer.getPrice())

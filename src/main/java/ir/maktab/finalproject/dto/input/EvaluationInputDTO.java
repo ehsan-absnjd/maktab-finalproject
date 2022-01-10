@@ -8,9 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class EvaluationInputDTO {
-
     Double points;
 
     String comment;
-
 }
