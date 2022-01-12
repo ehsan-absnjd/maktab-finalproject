@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-@Profile("!test")
-@Aspect
-@Component
+//@Profile("!test")
+//@Aspect
+//@Component
 public class LoggingAspect {
     Logger logger = (Logger) LoggerFactory.getLogger(LoggingAspect.class);
 

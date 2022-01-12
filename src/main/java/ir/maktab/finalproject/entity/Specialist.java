@@ -15,6 +15,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Specialist extends User {
+    {
+        role = Role.SPECIALIST;
+    }
     private String photoURL;
 
     private Double points;

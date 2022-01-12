@@ -7,13 +7,14 @@ import javax.validation.constraints.*;
 import java.util.Date;
 import java.util.Objects;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Setter
 @Getter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User{
+public abstract class User{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -41,5 +42,8 @@ public class User{
 
     @NotNull
     private Double credit;
+
+    @NotNull
+    Role role;
 }
 
