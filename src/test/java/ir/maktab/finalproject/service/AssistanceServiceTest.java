@@ -43,7 +43,7 @@ class AssistanceServiceTest {
         service.save(assistanceInpputDTO1);
         service.save(assistanceInpputDTO2);
         List<AssistanceOutputDTO> all1 = service.findAll();
-        List<AssistanceOutputDTO> all2 = service.findAll(PageRequest.of(0, 10));
+        List<AssistanceOutputDTO> all2 = service.findAll(PageRequest.of(0, 1));
         assertEquals(2,all1.size());
         assertEquals(2,all2.size());
     }
