@@ -31,16 +31,16 @@ public class AppUserDetailService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),authorities );
     }
 
-    private List<GrantedAuthority> getAuthorities(Role role) {
+    private List<GrantedAuthority> getAuthorities(String role) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         switch (role){
-            case CUSTOMER:
+            case "CUSTOMER":
                 authorities= getCustomerAuthorities();
                 break;
-            case SPECIALIST:
+            case "SPECIALIST":
                 authorities= getSpecialistAuthorities();
                 break;
-            case ADMIN:
+            case "ADMIN":
                 authorities= getAdminAuthorities();
         }
         return authorities;

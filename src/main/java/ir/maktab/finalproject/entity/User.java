@@ -44,6 +44,6 @@ public abstract class User{
     private Double credit;
 
     @NotNull
-    Role role;
+    String role;
 }
 

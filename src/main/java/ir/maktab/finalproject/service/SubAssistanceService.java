@@ -1,7 +1,7 @@
 package ir.maktab.finalproject.service;
 
-import ir.maktab.finalproject.dto.input.SubAssistanceInputDTO;
-import ir.maktab.finalproject.dto.output.SubAssistanceOutputDTO;
+import ir.maktab.finalproject.service.dto.input.SubAssistanceInputDTO;
+import ir.maktab.finalproject.service.dto.output.SubAssistanceOutputDTO;
 import ir.maktab.finalproject.entity.Assistance;
 import ir.maktab.finalproject.entity.SubAssistance;
 import ir.maktab.finalproject.exception.AssistanceNotFoundException;

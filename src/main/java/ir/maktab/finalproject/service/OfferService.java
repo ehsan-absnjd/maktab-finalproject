@@ -1,7 +1,7 @@
 package ir.maktab.finalproject.service;
 
-import ir.maktab.finalproject.dto.input.OfferInputDTO;
-import ir.maktab.finalproject.dto.output.OfferOutputDTO;
+import ir.maktab.finalproject.service.dto.input.OfferInputDTO;
+import ir.maktab.finalproject.service.dto.output.OfferOutputDTO;
 import ir.maktab.finalproject.entity.Offer;
 import ir.maktab.finalproject.entity.Request;
 import ir.maktab.finalproject.entity.RequestStatus;
@@ -13,7 +13,6 @@ import ir.maktab.finalproject.repository.SpecialistRepository;
 import ir.maktab.finalproject.repository.SubAssistanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
@@ -101,7 +100,6 @@ public class OfferService {
     @Transactional
     public void removeById(Long requestId, Long offerId){
         Offer offer = repository.findByRequestIdAndOfferId(requestId, offerId).orElseThrow(()->new OfferNotFoundException());
-        //if (request.getStatus()==) some policy here
         repository.delete(offer);
     }
 

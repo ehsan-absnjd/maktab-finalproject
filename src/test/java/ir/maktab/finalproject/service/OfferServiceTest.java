@@ -2,11 +2,11 @@ package ir.maktab.finalproject.service;
 
 import ir.maktab.finalproject.TestConfig;
 import ir.maktab.finalproject.TestHelper;
-import ir.maktab.finalproject.dto.input.*;
-import ir.maktab.finalproject.dto.output.*;
 import ir.maktab.finalproject.entity.*;
 import ir.maktab.finalproject.exception.InvalidSpecialistOfferException;
 import ir.maktab.finalproject.exception.OfferNotFoundException;
+import ir.maktab.finalproject.service.dto.input.*;
+import ir.maktab.finalproject.service.dto.output.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,10 +157,9 @@ class OfferServiceTest {
         requestService.selectOffer(requestId1, saved.getId());
         requestService.markBegun(requestId1);
         requestService.markDone(requestId1);
-        requestService.settle(requestId1, EvaluationInputDTO.builder().points(10d).comment("it was good").build());
+        requestService.pay(requestId1);
         assertEquals(specialistCredit+offerPrice , specialistService.findById(specialistId).getCredit() , .001);
         assertEquals(customerCredit-offerPrice , customerService.findById(customerId).getCredit() , .001);
-        assertEquals(10d , specialistService.findById(specialistId).getPoints()  , .001 );
     }
 
     @Test
@@ -174,11 +173,11 @@ class OfferServiceTest {
         requestService.selectOffer(requestId1, saved1.getId());
         requestService.markBegun(requestId1);
         requestService.markDone(requestId1);
-        requestService.settle(requestId1, EvaluationInputDTO.builder().points(points1).comment("it was good").build());
+        requestService.evaluate(requestId1, EvaluationInputDTO.builder().points(points1).comment("it was good").build());
         requestService.selectOffer(requestId2, saved2.getId());
         requestService.markBegun(requestId2);
         requestService.markDone(requestId2);
-        requestService.settle(requestId2, EvaluationInputDTO.builder().points(points2).comment("it was not bad").build());
+        requestService.evaluate(requestId2, EvaluationInputDTO.builder().points(points2).comment("it was not bad").build());
         SpecialistOutputDTO specialist = specialistService.findById(specialistId);
         assertEquals((points1+points2)/2 , specialist.getPoints() , 0.001);
     }

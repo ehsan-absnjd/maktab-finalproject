@@ -17,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class Customer extends User{
     {
-        role = Role.CUSTOMER;
+        role = "CUSTOMER";
     }
     @OneToMany(cascade = CascadeType.ALL , orphanRemoval = true)
     @JoinColumn(name = "customer_id")

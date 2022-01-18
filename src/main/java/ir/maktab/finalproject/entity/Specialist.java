@@ -16,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class Specialist extends User {
     {
-        role = Role.SPECIALIST;
+        role = "SPECIALIST";
     }
     private String photoURL;
 

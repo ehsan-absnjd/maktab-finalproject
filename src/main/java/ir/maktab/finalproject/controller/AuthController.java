@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/auth")
 public class TestController {
     @Value("${secret}")
     String secret;
@@ -56,8 +56,13 @@ public class TestController {
         return "ok";
     }
 
-    @PostMapping("/api/auth/login")
-    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginInputDTO loginInputDTO ){
+    @PostMapping("/customers")
+    public void registerCustomer(){
+
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ResponseTemplate<Map>> login(@Valid @RequestBody LoginInputDTO loginInputDTO ){
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginInputDTO.getEmail(), loginInputDTO.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
@@ -65,11 +70,12 @@ public class TestController {
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", getAccessToken(user));
         tokens.put("refresh_token", getRefreshToken(user));
-        return ResponseEntity.ok(tokens);
+        ResponseTemplate<Map> result = ResponseTemplate.<Map>builder().code(200).message("login was successful.").data(tokens).build();
+        return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/api/auth/refreshtoken")
-    public ResponseEntity<Map<String, String>> refreshToken(HttpServletRequest request){
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<ResponseTemplate<Map>> refreshToken(HttpServletRequest request){
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             try {
@@ -80,7 +86,8 @@ public class TestController {
                 UserDetails user = userDetailsService.loadUserByUsername(email);
                 Map<String, String> tokens = new HashMap<>();
                 tokens.put("access_token", getAccessToken(user));
-                return ResponseEntity.ok(tokens);
+                ResponseTemplate<Map> result = ResponseTemplate.<Map>builder().code(200).message("token regenerated successfully.").data(tokens).build();
+                return ResponseEntity.ok(result);
             }catch (RuntimeException exception) {
                 throw exception;
             }

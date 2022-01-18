@@ -2,10 +2,10 @@ package ir.maktab.finalproject.service;
 
 import ir.maktab.finalproject.TestConfig;
 import ir.maktab.finalproject.TestHelper;
-import ir.maktab.finalproject.dto.input.AssistanceInputDTO;
-import ir.maktab.finalproject.dto.input.SpecialistInputDTO;
-import ir.maktab.finalproject.dto.output.AssistanceOutputDTO;
-import ir.maktab.finalproject.dto.output.SpecialistOutputDTO;
+import ir.maktab.finalproject.service.dto.input.AssistanceInputDTO;
+import ir.maktab.finalproject.service.dto.input.SpecialistInputDTO;
+import ir.maktab.finalproject.service.dto.output.AssistanceOutputDTO;
+import ir.maktab.finalproject.service.dto.output.SpecialistOutputDTO;
 import ir.maktab.finalproject.entity.Specialist;
 import ir.maktab.finalproject.entity.UserStatus;
 import ir.maktab.finalproject.exception.SpecialistNotFoundException;

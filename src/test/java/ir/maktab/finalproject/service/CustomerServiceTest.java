@@ -2,8 +2,8 @@ package ir.maktab.finalproject.service;
 
 import ir.maktab.finalproject.TestConfig;
 import ir.maktab.finalproject.TestHelper;
-import ir.maktab.finalproject.dto.input.CustomerInputDTO;
-import ir.maktab.finalproject.dto.output.CustomerOutputDTO;
+import ir.maktab.finalproject.service.dto.input.CustomerInputDTO;
+import ir.maktab.finalproject.service.dto.output.CustomerOutputDTO;
 import ir.maktab.finalproject.entity.Customer;
 import ir.maktab.finalproject.entity.UserStatus;
 import ir.maktab.finalproject.exception.CustomerNotFoundException;
@@ -52,6 +52,17 @@ class CustomerServiceTest {
         service.changePassword(saved.getId(), newPassword);
         Customer customer = service.getById(saved.getId());
         assertEquals(newPassword,customer.getPassword());
+    }
+
+    @Test
+    public void whenAddingCreditToCustomer_shouldGetItRight(){
+        CustomerInputDTO inputDTO = helper.getCustomerInputDTO1();
+        CustomerOutputDTO saved = service.save(inputDTO);
+        Double credit = saved.getCredit();
+        Double addedCredit = 1000d;
+        service.addCredit(saved.getId(), addedCredit );
+        CustomerOutputDTO retrieved = service.findById(saved.getId());
+        assertEquals(credit+addedCredit ,  retrieved.getCredit() , .001);
     }
 
     @Test

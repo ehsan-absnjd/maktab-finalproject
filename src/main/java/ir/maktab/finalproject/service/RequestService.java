@@ -1,8 +1,8 @@
 package ir.maktab.finalproject.service;
 
-import ir.maktab.finalproject.dto.input.EvaluationInputDTO;
-import ir.maktab.finalproject.dto.input.RequestInputDTO;
-import ir.maktab.finalproject.dto.output.RequestOutputDTO;
+import ir.maktab.finalproject.service.dto.input.EvaluationInputDTO;
+import ir.maktab.finalproject.service.dto.input.RequestInputDTO;
+import ir.maktab.finalproject.service.dto.output.RequestOutputDTO;
 import ir.maktab.finalproject.entity.*;
 import ir.maktab.finalproject.exception.*;
 import ir.maktab.finalproject.repository.*;
@@ -62,6 +62,21 @@ public class RequestService {
         return repository.findAll(pageable).map(this::convertToDTO).get().collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<RequestOutputDTO> findForSpecialist(Long specialistId, Pageable pageable){
+        return repository.findForSpecialist(specialistId , pageable).stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<RequestOutputDTO> findByCustomerId(Long customerId, Pageable pageable){
+        return repository.findByCustomerId(customerId , pageable).stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<RequestOutputDTO> findBySpecialistId(Long specialistId, Pageable pageable){
+        return repository.findBySpecialistId(specialistId , pageable).stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
     @Transactional
     public RequestOutputDTO update(Long id, RequestInputDTO inputDTO){
         Request request = repository.findById(id).orElseThrow(() -> new RequestNotFoundException());
@@ -81,24 +96,13 @@ public class RequestService {
         if(!Objects.equals(offer.getRequest().getId(), requestId))
             throw new InvalidOfferSelectionException();
         Request request = repository.findById(requestId).orElseThrow(() -> new RequestNotFoundException());
-        if(request.getCustomer().getCredit()<offer.getPrice())
-            throw new NotEnoughCreditException();
         request.setSelectedOffer(offer);
         request.setStatus(RequestStatus.WAITING_ARRIVAL);
         Request saved = repository.save(request);
         return convertToDTO(saved);
     }
 
-    @Transactional
-    public RequestOutputDTO unSelectOffer(Long requestId){
-        Request request = repository.findById(requestId).orElseThrow(() -> new RequestNotFoundException());
-        if(request.getStatus()!=RequestStatus.WAITING_ARRIVAL)
-            throw new InvalidCanselException();
-        request.setStatus(RequestStatus.WAITING_FOR_SELECT);
-        request.setSelectedOffer(null);
-        Request saved = repository.save(request);
-        return convertToDTO(saved);
-    }
+
 
     @Transactional
     public RequestOutputDTO markBegun(Long requestId){
@@ -121,25 +125,36 @@ public class RequestService {
     }
 
     @Transactional
-    public RequestOutputDTO settle(Long requestId, EvaluationInputDTO inputDTO){
+    public RequestOutputDTO evaluate(Long requestId, EvaluationInputDTO inputDTO){
+        Request request = repository.findById(requestId).orElseThrow(() -> new RequestNotFoundException());
+        if ( request.getStatus()!= RequestStatus.DONE && request.getStatus()!= RequestStatus.PAID)
+            throw new InvalidRequestEvaluationException();
+        Offer selectedOffer = request.getSelectedOffer();
+        Specialist specialist = selectedOffer.getSpecialist();
+        request.setComment(inputDTO.getComment());
+        request.setPoints(inputDTO.getPoints());
+        Request saved = repository.save(request);
+        specialistRepository.updateSpecialistPoints(specialist.getId());
+        return convertToDTO(saved);
+    }
+
+    @Transactional
+    public RequestOutputDTO pay(Long requestId){
         Request request = repository.findById(requestId).orElseThrow(() -> new RequestNotFoundException());
         Offer selectedOffer = request.getSelectedOffer();
         Specialist specialist = selectedOffer.getSpecialist();
         Customer customer = request.getCustomer();
         Double price = selectedOffer.getPrice();
         if (request.getStatus()!= RequestStatus.DONE )
-            throw new InvalidPayRequestException();
+            throw new InvalidRequestStatusException();
         if (customer.getCredit() < price)
             throw new RequestSettlementException("customer credit is not enough");
-        request.setComment(inputDTO.getComment());
-        request.setPoints(inputDTO.getPoints());
         specialist.setCredit(specialist.getCredit() + price);
         customer.setCredit(customer.getCredit() - price);
         request.setStatus(RequestStatus.PAID);
         customerRepository.save(customer);
-        Request saved = repository.save(request);
         specialistRepository.save(specialist);
-        specialistRepository.updateSpecialistPoints(specialist.getId());
+        Request saved = repository.save(request);
         return convertToDTO(saved);
     }
 

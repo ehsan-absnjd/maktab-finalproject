@@ -2,14 +2,8 @@ package ir.maktab.finalproject.service;
 
 import ir.maktab.finalproject.TestConfig;
 import ir.maktab.finalproject.TestHelper;
-import ir.maktab.finalproject.dto.input.AssistanceInputDTO;
-import ir.maktab.finalproject.dto.input.CustomerInputDTO;
-import ir.maktab.finalproject.dto.input.RequestInputDTO;
-import ir.maktab.finalproject.dto.input.SubAssistanceInputDTO;
-import ir.maktab.finalproject.dto.output.AssistanceOutputDTO;
-import ir.maktab.finalproject.dto.output.CustomerOutputDTO;
-import ir.maktab.finalproject.dto.output.RequestOutputDTO;
-import ir.maktab.finalproject.dto.output.SubAssistanceOutputDTO;
+import ir.maktab.finalproject.service.dto.input.*;
+import ir.maktab.finalproject.service.dto.output.*;
 import ir.maktab.finalproject.entity.RequestStatus;
 import ir.maktab.finalproject.exception.RequestNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -103,4 +97,43 @@ class RequestServiceTest {
         service.removeById(saved.getId());
         assertThrows(RequestNotFoundException.class , ()-> service.findById(saved.getId()));
     }
+
+    @Test
+    public void whenGettingRelevantRequestForUser_shouldBeAbleToGetTheMatchingByAssistance(){
+        RequestInputDTO requestInputDTO1 = helper.getRequestInputDTO1(subAssistanceId, customerId);
+        RequestOutputDTO saved = service.save(requestInputDTO1);
+        SpecialistInputDTO specialistInputDTO = helper.getSpecialistInputDTO1();
+        SpecialistInputDTO specialistInputDTO2 = helper.getSpecialistInputDTO2();
+        SpecialistOutputDTO savedSpecialist = specialistService.save(specialistInputDTO);
+        SpecialistOutputDTO savedSpecialist2 = specialistService.save(specialistInputDTO2);
+        specialistService.addAssistance(savedSpecialist.getId() , assistanceId);
+        List<RequestOutputDTO> firstList = service.findForSpecialist(savedSpecialist.getId(), PageRequest.of(0, 10));
+        List<RequestOutputDTO> secondList = service.findForSpecialist(savedSpecialist2.getId(), PageRequest.of(0, 10));
+        assertEquals(1, firstList.size());
+        assertEquals(0 , secondList.size());
+    }
+
+    @Test
+    public void whenAddingRequestForCustomer_shouldBeAbleToGetIt() {
+        RequestInputDTO requestInputDTO1 = helper.getRequestInputDTO1(subAssistanceId, customerId);
+        RequestOutputDTO saved = service.save(requestInputDTO1);
+        List<RequestOutputDTO> requestOutputDTOList = service.findByCustomerId(customerId, PageRequest.of(0, 10));
+        List<RequestOutputDTO> list2 = service.findByCustomerId(1001L, PageRequest.of(0, 10));
+        assertEquals(1, requestOutputDTOList.size());
+        assertEquals(0, list2.size());
+    }
+
+    @Test
+    public void whenSelectingOrderForRequest_shouldBeAbleToGetRequestForSpecialist(){
+        RequestInputDTO requestInputDTO1 = helper.getRequestInputDTO1(subAssistanceId, customerId);
+        RequestOutputDTO saved = service.save(requestInputDTO1);
+        SpecialistOutputDTO specialistOutputDTO = specialistService.save(helper.getSpecialistInputDTO1());
+        specialistService.addAssistance(specialistOutputDTO.getId() , assistanceId);
+        OfferOutputDTO offerOutputDTO = offerService.save(saved.getId(), helper.getOfferInputDTO1(specialistOutputDTO.getId(), 200000d));
+        service.selectOffer(saved.getId() ,offerOutputDTO.getId());
+        List<RequestOutputDTO> requestOutputDTOList = service.findBySpecialistId(specialistOutputDTO.getId(),PageRequest.of(0,10));
+        assertEquals(requestOutputDTOList.size() , 1);
+    }
+
+
 }

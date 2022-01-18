@@ -1,15 +1,17 @@
-package ir.maktab.finalproject.dto.output;
+package ir.maktab.finalproject.service.dto.output;
 
 import ir.maktab.finalproject.entity.UserStatus;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
 import java.util.Date;
 
-@Builder
+@SuperBuilder
 @Setter
 @Getter
-public class SpecialistOutputDTO {
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserOutputDTO {
     private Long id;
 
     private String firstName;
@@ -24,7 +26,5 @@ public class SpecialistOutputDTO {
 
     private Double credit;
 
-    private String photoURL;
-
-    private Double points;
+    private String role;
 }

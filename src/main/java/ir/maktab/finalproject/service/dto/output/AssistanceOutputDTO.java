@@ -1,4 +1,4 @@
-package ir.maktab.finalproject.dto.output;
+package ir.maktab.finalproject.service.dto.output;
 
 import lombok.Builder;
 import lombok.Getter;

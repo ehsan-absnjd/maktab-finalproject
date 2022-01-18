@@ -1,7 +1,7 @@
 package ir.maktab.finalproject;
 
-import ir.maktab.finalproject.dto.input.*;
-import ir.maktab.finalproject.dto.output.*;
+import ir.maktab.finalproject.service.dto.input.*;
+import ir.maktab.finalproject.service.dto.output.*;
 
 import java.util.Date;
 

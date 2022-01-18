@@ -1,11 +1,14 @@
 package ir.maktab.finalproject.service;
 
-import ir.maktab.finalproject.dto.input.CustomerInputDTO;
-import ir.maktab.finalproject.dto.output.CustomerOutputDTO;
+import ir.maktab.finalproject.entity.Specialist;
+import ir.maktab.finalproject.exception.SpecialistNotFoundException;
+import ir.maktab.finalproject.service.dto.input.CustomerInputDTO;
+import ir.maktab.finalproject.service.dto.output.CustomerOutputDTO;
 import ir.maktab.finalproject.entity.Customer;
 import ir.maktab.finalproject.entity.UserStatus;
 import ir.maktab.finalproject.exception.CustomerNotFoundException;
 import ir.maktab.finalproject.repository.CustomerRepository;
+import ir.maktab.finalproject.service.dto.output.SpecialistOutputDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -76,6 +79,15 @@ public class CustomerService{
         return convertToDTO(customer);
     }
 
+
+    @Transactional
+    public CustomerOutputDTO addCredit(Long customerId , Double credit){
+        Customer customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException());
+        customer.setCredit(customer.getCredit() + credit );
+        Customer saved = repository.save(customer);
+        return convertToDTO(saved);
+    }
+
     @Transactional
     public void removeById(Long customerId){
         Customer customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException());
@@ -103,6 +115,7 @@ public class CustomerService{
                 .registrationDate(input.getRegistrationDate())
                 .status(input.getStatus())
                 .credit(input.getCredit())
+                .role("CUSTOMER")
                 .build();
     }
 }

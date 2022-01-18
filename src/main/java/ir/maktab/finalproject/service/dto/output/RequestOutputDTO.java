@@ -1,4 +1,4 @@
-package ir.maktab.finalproject.dto.output;
+package ir.maktab.finalproject.service.dto.output;
 
 import ir.maktab.finalproject.entity.RequestStatus;
 import lombok.Builder;

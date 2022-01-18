@@ -2,13 +2,12 @@ package ir.maktab.finalproject.service;
 
 import ir.maktab.finalproject.TestConfig;
 import ir.maktab.finalproject.TestHelper;
-import ir.maktab.finalproject.dto.input.AssistanceInputDTO;
-import ir.maktab.finalproject.dto.output.AssistanceOutputDTO;
+import ir.maktab.finalproject.service.dto.input.AssistanceInputDTO;
+import ir.maktab.finalproject.service.dto.output.AssistanceOutputDTO;
 import ir.maktab.finalproject.exception.AssistanceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -43,7 +42,7 @@ class AssistanceServiceTest {
         service.save(assistanceInpputDTO1);
         service.save(assistanceInpputDTO2);
         List<AssistanceOutputDTO> all1 = service.findAll();
-        List<AssistanceOutputDTO> all2 = service.findAll(PageRequest.of(0, 1));
+        List<AssistanceOutputDTO> all2 = service.findAll(PageRequest.of(0, 10));
         assertEquals(2,all1.size());
         assertEquals(2,all2.size());
     }

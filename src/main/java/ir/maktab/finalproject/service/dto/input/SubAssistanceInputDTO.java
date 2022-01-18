@@ -1,21 +1,21 @@
-package ir.maktab.finalproject.dto.output;
+package ir.maktab.finalproject.service.dto.input;
 
-import ir.maktab.finalproject.entity.Assistance;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 @Builder
 @Setter
 @Getter
-public class SubAssistanceOutputDTO {
-    private Long id;
-
+public class SubAssistanceInputDTO {
+    @NotNull
     private String title;
 
+    @NotNull
     private Double basePrice;
 
+    @NotNull
     private String description;
-
-    private Long assistanceId;
 }
