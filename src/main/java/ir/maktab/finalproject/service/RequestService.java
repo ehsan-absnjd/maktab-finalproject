@@ -19,19 +19,19 @@ import java.util.stream.Collectors;
 @Service
 public class RequestService {
     @Autowired
-    RequestRepository repository;
+    private RequestRepository repository;
 
     @Autowired
-    OfferRepository offerRepository;
+    private OfferRepository offerRepository;
 
     @Autowired
-    SpecialistRepository specialistRepository;
+    private SpecialistRepository specialistRepository;
 
     @Autowired
-    CustomerRepository customerRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
-    SubAssistanceRepository subAssistanceRepository;
+    private SubAssistanceRepository subAssistanceRepository;
 
     @Transactional
     public RequestOutputDTO save(RequestInputDTO inputDTO){

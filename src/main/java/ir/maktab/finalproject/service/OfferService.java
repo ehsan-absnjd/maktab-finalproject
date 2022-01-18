@@ -22,16 +22,16 @@ import java.util.stream.Collectors;
 @Service
 public class OfferService {
     @Autowired
-    OfferRepository repository;
+    private OfferRepository repository;
 
     @Autowired
-    RequestRepository requestRepository;
+    private RequestRepository requestRepository;
 
     @Autowired
-    SpecialistRepository specialistRepository;
+    private SpecialistRepository specialistRepository;
 
     @Autowired
-    SubAssistanceRepository subAssistanceRepository;
+    private SubAssistanceRepository subAssistanceRepository;
 
     @Transactional
     public OfferOutputDTO save(Long requestId , OfferInputDTO inputDTO){

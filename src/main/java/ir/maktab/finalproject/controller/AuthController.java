@@ -4,8 +4,19 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import ir.maktab.finalproject.controller.dto.CustomerRegisterParam;
+import ir.maktab.finalproject.controller.dto.LoginInputDTO;
+import ir.maktab.finalproject.controller.dto.ResponseTemplate;
+import ir.maktab.finalproject.controller.dto.SpecialistRegisterParam;
+import ir.maktab.finalproject.service.dto.input.CustomerInputDTO;
+import ir.maktab.finalproject.service.dto.input.SpecialistInputDTO;
+import ir.maktab.finalproject.service.dto.output.CustomerOutputDTO;
+import ir.maktab.finalproject.service.dto.output.SpecialistOutputDTO;
+import ir.maktab.finalproject.service.CustomerService;
+import ir.maktab.finalproject.service.SpecialistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +39,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequestMapping("/auth")
-public class TestController {
+public class AuthController {
     @Value("${secret}")
     String secret;
 
@@ -45,20 +56,10 @@ public class TestController {
     AuthenticationManager authenticationManager;
 
     Algorithm algorithm;
+
     @PostConstruct
     public void init(){
         algorithm = Algorithm.HMAC256(secret.getBytes());
-    }
-
-    @PreAuthorize("hasAuthority('can_read')")
-    @GetMapping("test")
-    public String test(){
-        return "ok";
-    }
-
-    @PostMapping("/customers")
-    public void registerCustomer(){
-
     }
 
     @PostMapping("/login")
@@ -96,14 +97,14 @@ public class TestController {
         }
     }
 
-    public String getRefreshToken(UserDetails user){
+    private String getRefreshToken(UserDetails user){
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + Integer.parseInt(refreshTokenPeriod) * 60 * 1000))
                 .sign(algorithm);
     }
 
-    public String getAccessToken(UserDetails user){
+    private String getAccessToken(UserDetails user){
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + Integer.parseInt(tokenPeriod) * 60 * 1000))

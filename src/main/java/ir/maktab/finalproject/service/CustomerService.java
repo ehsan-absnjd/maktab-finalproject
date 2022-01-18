@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class CustomerService{
     @Autowired
-    CustomerRepository repository;
+    private CustomerRepository repository;
 
     @Transactional
     public CustomerOutputDTO save(CustomerInputDTO inputDTO){

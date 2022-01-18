@@ -1,4 +1,4 @@
-package ir.maktab.finalproject.controller;
+package ir.maktab.finalproject.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

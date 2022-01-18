@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 @Service
 public class SubAssistanceService{
     @Autowired
-    SubAssistanceRepository repository;
+    private SubAssistanceRepository repository;
 
     @Autowired
-    AssistanceRepository assistanceRepository;
+    private AssistanceRepository assistanceRepository;
 
     @Transactional
     public SubAssistanceOutputDTO save(Long assistanceId , SubAssistanceInputDTO inputDTO){

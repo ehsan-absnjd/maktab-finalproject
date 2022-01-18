@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class AppUserDetailService implements UserDetailsService {
     @Autowired
-    UserRepository repository;
+    private UserRepository repository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -28,7 +28,7 @@ public class AppUserDetailService implements UserDetailsService {
         if (user==null)
             throw new UserNotFoundException();
         List<GrantedAuthority> authorities = getAuthorities(user.getRole());
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),authorities );
+        return new org.springframework.security.core.userdetails.User(String.valueOf( user.getId()), user.getPassword(),authorities );
     }
 
     private List<GrantedAuthority> getAuthorities(String role) {
@@ -47,7 +47,7 @@ public class AppUserDetailService implements UserDetailsService {
     }
 
     private List<GrantedAuthority> getAdminAuthorities() {
-        String[] authorities = {"can_read" , "can_write"};
+        String[] authorities = {"canaddassistance","can_read" , "can_write"};
         return Arrays.stream(authorities).map( s -> new SimpleGrantedAuthority(s)).collect(Collectors.toList());
     }
 

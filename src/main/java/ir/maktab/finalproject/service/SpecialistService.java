@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 @Service
 public class SpecialistService {
     @Autowired
-    SpecialistRepository repository;
+    private SpecialistRepository repository;
 
     @Autowired
-    AssistanceRepository assistanceRepository;
+    private AssistanceRepository assistanceRepository;
 
     @Transactional
     public SpecialistOutputDTO save(SpecialistInputDTO inputDTO){
