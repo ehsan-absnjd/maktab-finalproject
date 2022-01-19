@@ -13,7 +13,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -117,8 +120,8 @@ class RequestServiceTest {
     public void whenAddingRequestForCustomer_shouldBeAbleToGetIt() {
         RequestInputDTO requestInputDTO1 = helper.getRequestInputDTO1(subAssistanceId, customerId);
         RequestOutputDTO saved = service.save(requestInputDTO1);
-        List<RequestOutputDTO> requestOutputDTOList = service.findByCustomerId(customerId, PageRequest.of(0, 10));
-        List<RequestOutputDTO> list2 = service.findByCustomerId(1001L, PageRequest.of(0, 10));
+        List<RequestOutputDTO> requestOutputDTOList = service.findByCustomerId(customerId, RequestStatus.WAITING_FOR_OFFERS ,  PageRequest.of(0, 10));
+        List<RequestOutputDTO> list2 = service.findByCustomerId(1001L, RequestStatus.WAITING_FOR_OFFERS ,PageRequest.of(0, 10));
         assertEquals(1, requestOutputDTOList.size());
         assertEquals(0, list2.size());
     }
@@ -131,8 +134,40 @@ class RequestServiceTest {
         specialistService.addAssistance(specialistOutputDTO.getId() , assistanceId);
         OfferOutputDTO offerOutputDTO = offerService.save(saved.getId(), helper.getOfferInputDTO1(specialistOutputDTO.getId(), 200000d));
         service.selectOffer(saved.getId() ,offerOutputDTO.getId());
-        List<RequestOutputDTO> requestOutputDTOList = service.findBySpecialistId(specialistOutputDTO.getId(),PageRequest.of(0,10));
+        List<RequestOutputDTO> requestOutputDTOList = service.findBySpecialistId(specialistOutputDTO.getId() , RequestStatus.WAITING_ARRIVAL ,PageRequest.of(0,10));
         assertEquals(requestOutputDTOList.size() , 1);
+    }
+
+    @Test
+    public void whenSelectingByUserId_retrievedRequestByCustomerAndSpecialistShouldBeSame() {
+        RequestInputDTO requestInputDTO1 = helper.getRequestInputDTO1(subAssistanceId, customerId);
+        RequestOutputDTO saved = service.save(requestInputDTO1);
+        SpecialistOutputDTO specialistOutputDTO = specialistService.save(helper.getSpecialistInputDTO1());
+        specialistService.addAssistance(specialistOutputDTO.getId(), assistanceId);
+        OfferOutputDTO offerOutputDTO = offerService.save(saved.getId(), helper.getOfferInputDTO1(specialistOutputDTO.getId(), 200000d));
+        service.selectOffer(saved.getId(), offerOutputDTO.getId());
+        service.markBegun(saved.getId());
+        service.markDone(saved.getId());
+        List<RequestOutputDTO> customers = service.findByUserId(customerId, PageRequest.of(0, 10));
+        List<RequestOutputDTO> specialists = service.findByUserId(specialistOutputDTO.getId(), PageRequest.of(0, 10));
+        assertEquals(customers.get(0).getId() , specialists.get(0).getId());
+    }
+
+    @Test
+    public void whenGettingByParameters_theResultsShouldBeOk(){
+        RequestInputDTO requestInputDTO1 = helper.getRequestInputDTO1(subAssistanceId, customerId);
+        RequestOutputDTO saved = service.save(requestInputDTO1);
+        SpecialistOutputDTO specialistOutputDTO = specialistService.save(helper.getSpecialistInputDTO1());
+        specialistService.addAssistance(specialistOutputDTO.getId(), assistanceId);
+        OfferOutputDTO offerOutputDTO = offerService.save(saved.getId(), helper.getOfferInputDTO1(specialistOutputDTO.getId(), 200000d));
+        service.selectOffer(saved.getId(), offerOutputDTO.getId());
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("requeststatus" , "WAITING_ARRIVAL");
+        List<RequestOutputDTO> byParameterMap = service.findByParameterMap(parameters);
+        parameters.put("requeststatus" , "BEGUN");
+        List<RequestOutputDTO> byParameterMap1 = service.findByParameterMap(parameters);
+        assertEquals(1, byParameterMap.size());
+        assertEquals(0, byParameterMap1.size());
     }
 
 

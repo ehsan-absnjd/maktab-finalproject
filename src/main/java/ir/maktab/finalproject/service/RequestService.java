@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -68,13 +69,23 @@ public class RequestService {
     }
 
     @Transactional(readOnly = true)
-    public List<RequestOutputDTO> findByCustomerId(Long customerId, Pageable pageable){
-        return repository.findByCustomerId(customerId , pageable).stream().map(this::convertToDTO).collect(Collectors.toList());
+    public List<RequestOutputDTO> findByCustomerId(Long customerId , RequestStatus status, Pageable pageable){
+        return repository.findByCustomerId(customerId , status, pageable).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<RequestOutputDTO> findBySpecialistId(Long specialistId, Pageable pageable){
-        return repository.findBySpecialistId(specialistId , pageable).stream().map(this::convertToDTO).collect(Collectors.toList());
+    public List<RequestOutputDTO> findBySpecialistId(Long specialistId , RequestStatus status ,  Pageable pageable){
+        return repository.findBySpecialistId(specialistId , status , pageable).stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<RequestOutputDTO> findByUserId(Long userId , Pageable pageable){
+        return repository.findByUserId(userId, pageable, RequestStatus.DONE , RequestStatus.PAID).stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<RequestOutputDTO> findByParameterMap(Map<String, String> parameterMap){
+        return repository.findByParameterMap(parameterMap).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Transactional
@@ -149,7 +160,7 @@ public class RequestService {
             throw new InvalidRequestStatusException();
         if (customer.getCredit() < price)
             throw new RequestSettlementException("customer credit is not enough");
-        specialist.setCredit(specialist.getCredit() + price);
+        specialist.setCredit(specialist.getCredit() + price*.7);
         customer.setCredit(customer.getCredit() - price);
         request.setStatus(RequestStatus.PAID);
         customerRepository.save(customer);

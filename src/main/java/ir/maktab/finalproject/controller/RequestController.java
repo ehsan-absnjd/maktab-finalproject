@@ -39,7 +39,7 @@ public class RequestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/evaluate")
     public ResponseEntity<ResponseTemplate<RequestOutputDTO>> addEvaluation(@PathVariable("id")Long requestId , EvaluationInputParam inputParam){
         EvaluationInputDTO dto = EvaluationInputDTO.builder().comment(inputParam.getComment()).points(inputParam.getPoints()).build();
         RequestOutputDTO requestOutputDTO = requestService.evaluate(requestId, dto);

@@ -4,23 +4,25 @@ import ir.maktab.finalproject.controller.dto.AddAssistanceInputParam;
 import ir.maktab.finalproject.controller.dto.CustomerRegisterParam;
 import ir.maktab.finalproject.controller.dto.ResponseTemplate;
 import ir.maktab.finalproject.controller.dto.SpecialistRegisterParam;
+import ir.maktab.finalproject.entity.RequestStatus;
 import ir.maktab.finalproject.service.CustomerService;
+import ir.maktab.finalproject.service.RequestService;
 import ir.maktab.finalproject.service.SpecialistService;
 import ir.maktab.finalproject.service.UserService;
 import ir.maktab.finalproject.service.dto.input.CustomerInputDTO;
 import ir.maktab.finalproject.service.dto.input.SpecialistInputDTO;
 import ir.maktab.finalproject.service.dto.output.CustomerOutputDTO;
+import ir.maktab.finalproject.service.dto.output.RequestOutputDTO;
 import ir.maktab.finalproject.service.dto.output.SpecialistOutputDTO;
 import ir.maktab.finalproject.service.dto.output.UserOutputDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +34,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RequestService requestService;
 
     @Value("${uploaddir}")
     private String uploadDir;
@@ -82,6 +86,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
+//    @GetMapping("/customers/{id}/requests")
+//    public ResponseEntity<ResponseTemplate<List<RequestOutputDTO>>> getCustomersRequests(@PathVariable String customerId , @RequestParam String status, Pageable pageable){
+//        List<RequestOutputDTO> requestOutputDTOS = requestService.findByCustomerId(Long.valueOf(customerId), RequestStatus.valueOf(status) , pageable);
+//        return ResponseEntity.ok(ResponseTemplate.<List<RequestOutputDTO>>builder().code(200).message("ok").data(requestOutputDTOS).build());
+//    }
+
     @PostMapping("/specialists")
     public ResponseEntity<ResponseTemplate<SpecialistOutputDTO>> registerSpecialist(@Valid @RequestBody SpecialistRegisterParam input){
         SpecialistInputDTO inputDTO = convertFromParam(input);
@@ -102,6 +112,18 @@ public class UserController {
                 .body(ResponseTemplate.builder().code(201).message("assistance added successfully.").build());
     }
 
+    @GetMapping("/specialists/{id}/relevantrequests")
+    public ResponseEntity<ResponseTemplate<List<RequestOutputDTO>>> getRevelentRequests(@PathVariable String specialistId, Pageable pageable){
+        List<RequestOutputDTO> requestOutputDTOS = requestService.findForSpecialist(Long.valueOf(specialistId), pageable);
+        return ResponseEntity.ok(ResponseTemplate.<List<RequestOutputDTO>>builder().code(200).message("ok").data(requestOutputDTOS).build());
+    }
+//
+//    @GetMapping("/specialists/{id}/requests")
+//    public ResponseEntity<ResponseTemplate<List<RequestOutputDTO>>> getSpecialistRequests(@PathVariable String specialistId, @RequestParam String status,  Pageable pageable){
+//        List<RequestOutputDTO> requestOutputDTOS = requestService.findBySpecialistId(Long.valueOf(specialistId), RequestStatus.valueOf(status), pageable);
+//        return ResponseEntity.ok(ResponseTemplate.<List<RequestOutputDTO>>builder().code(200).message("ok").data(requestOutputDTOS).build());
+//    }
+
     @PostMapping("/uploadfile")
     public void uploadFile(@RequestParam("file") MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
@@ -118,11 +140,33 @@ public class UserController {
         }
     }
 
+//    @PreAuthorize("hasAuthority('view')")
+//    @GetMapping("/users")
+//    public ResponseEntity<ResponseTemplate<List<UserOutputDTO>>> findUserByParam(HttpServletRequest request , Pageable pageable){
+//        Map<String, String[]> parameterMap = request.getParameterMap();
+//        List<UserOutputDTO> userOutputDTOList = userService.findByParameters(parameterMap);
+//        return ResponseEntity.ok(ResponseTemplate.<List<UserOutputDTO>>builder()
+//                        .data(userOutputDTOList)
+//                        .message("ok")
+//                        .code(200)
+//                .build());
+//    }
+
     @PreAuthorize("hasAuthority('view')")
-    @GetMapping("/users")
-    public List<UserOutputDTO> findUserByParam(HttpServletRequest request){
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        return userService.findByParameters(parameterMap);
+    @GetMapping("/users/{id}/requests")
+    public ResponseEntity<ResponseTemplate<List<RequestOutputDTO>>> findUserRequests(@PathVariable String id, Pageable pageable){
+        List<RequestOutputDTO> requestOutputDTOList=null;
+        UserOutputDTO user = userService.findById(Long.valueOf(id));
+//        if (user instanceof CustomerOutputDTO) {
+//            requestOutputDTOList = requestService.findByCustomerId(user.getId(), pageable);
+//        }else {
+//            requestOutputDTOList = requestService.findBySpecialistId(user.getId(), pageable);
+//        }
+        return ResponseEntity.ok(ResponseTemplate.<List<RequestOutputDTO>>builder()
+                        .code(200)
+                        .message("ok")
+                        .data(requestOutputDTOList)
+                .build());
     }
 
     private SpecialistInputDTO convertFromParam(SpecialistRegisterParam input) {

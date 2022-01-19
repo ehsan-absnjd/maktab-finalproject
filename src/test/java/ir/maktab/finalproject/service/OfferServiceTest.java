@@ -158,7 +158,7 @@ class OfferServiceTest {
         requestService.markBegun(requestId1);
         requestService.markDone(requestId1);
         requestService.pay(requestId1);
-        assertEquals(specialistCredit+offerPrice , specialistService.findById(specialistId).getCredit() , .001);
+        assertEquals(specialistCredit+offerPrice*.7 , specialistService.findById(specialistId).getCredit() , .001);
         assertEquals(customerCredit-offerPrice , customerService.findById(customerId).getCredit() , .001);
     }
 

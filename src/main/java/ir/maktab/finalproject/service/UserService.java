@@ -3,16 +3,14 @@ package ir.maktab.finalproject.service;
 import ir.maktab.finalproject.entity.Customer;
 import ir.maktab.finalproject.entity.Specialist;
 import ir.maktab.finalproject.entity.User;
+import ir.maktab.finalproject.exception.UserNotFoundException;
 import ir.maktab.finalproject.repository.UserRepository;
 import ir.maktab.finalproject.service.dto.output.CustomerOutputDTO;
 import ir.maktab.finalproject.service.dto.output.SpecialistOutputDTO;
 import ir.maktab.finalproject.service.dto.output.UserOutputDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,8 +20,16 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    public List<UserOutputDTO> findByParameters(Map<String, String[]> parameterMap) {
+    public  UserOutputDTO findById(Long id){
+        return convertToDTO(repository.findById(id).orElseThrow(()->new UserNotFoundException()));
+    }
+
+    public List<UserOutputDTO> findByParameters(Map<String, String> parameterMap) {
         return repository.findByParameters(parameterMap).stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public List<UserOutputDTO> getReportByParameters(Map<String, String> parameterMap){
+        return repository.getReport(parameterMap).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     private UserOutputDTO convertToDTO(User user) {
