@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import ir.maktab.finalproject.controller.dto.LoginInputParam;
 import ir.maktab.finalproject.controller.dto.ResponseTemplate;
+import ir.maktab.finalproject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,9 @@ public class AuthController {
     UserDetailsService userDetailsService;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     AuthenticationManager authenticationManager;
 
     Algorithm algorithm;
@@ -73,8 +77,8 @@ public class AuthController {
                 String refresh_token = authorizationHeader.substring("Bearer ".length());
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refresh_token);
-                String email = decodedJWT.getSubject();
-                UserDetails user = userDetailsService.loadUserByUsername(email);
+                String id = decodedJWT.getSubject();
+                UserDetails user = userDetailsService.loadUserByUsername( userService.findById (Long.valueOf(id)).getEmail());
                 Map<String, String> tokens = new HashMap<>();
                 tokens.put("access_token", getAccessToken(user));
                 ResponseTemplate<Map> result = ResponseTemplate.<Map>builder().code(200).message("token regenerated successfully.").data(tokens).build();

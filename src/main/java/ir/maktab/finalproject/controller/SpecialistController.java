@@ -5,7 +5,7 @@ import ir.maktab.finalproject.controller.dto.ResponseTemplate;
 import ir.maktab.finalproject.controller.dto.SpecialistRegisterParam;
 import ir.maktab.finalproject.entity.RequestStatus;
 import ir.maktab.finalproject.exception.InvalidFileFormatException;
-import ir.maktab.finalproject.exception.MyFileNotFoundException;
+import ir.maktab.finalproject.exception.FileNotFoundException;
 import ir.maktab.finalproject.exception.UnauthenticatedException;
 import ir.maktab.finalproject.service.RequestService;
 import ir.maktab.finalproject.service.SpecialistService;
@@ -150,10 +150,10 @@ public class SpecialistController {
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                         .body(resource);
             } else {
-                throw new MyFileNotFoundException();
+                throw new FileNotFoundException();
             }
         } catch (MalformedURLException ex) {
-            throw new MyFileNotFoundException();
+            throw new FileNotFoundException();
         }
     }
 
