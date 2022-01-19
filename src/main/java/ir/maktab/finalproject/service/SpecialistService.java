@@ -79,16 +79,24 @@ public class SpecialistService {
     public SpecialistOutputDTO changePassword(Long specialistId , String password){
         Specialist specialist = repository.findById(specialistId).orElseThrow(() -> new SpecialistNotFoundException());
         specialist.setPassword(password);
-        repository.save(specialist);
-        return convertToDTO(specialist);
+        Specialist saved = repository.save(specialist);
+        return convertToDTO(saved);
+    }
+
+    @Transactional
+    public SpecialistOutputDTO changePhotoUrl(Long specialistId , String url){
+        Specialist specialist = repository.findById(specialistId).orElseThrow(() -> new SpecialistNotFoundException());
+        specialist.setPhotoURL(url);
+        Specialist saved = repository.save(specialist);
+        return convertToDTO(saved);
     }
 
     @Transactional
     public SpecialistOutputDTO changeStatus(Long specialistId , UserStatus status){
         Specialist specialist = repository.findById(specialistId).orElseThrow(() -> new SpecialistNotFoundException());
         specialist.setStatus(status);
-        repository.save(specialist);
-        return convertToDTO(specialist);
+        Specialist saved = repository.save(specialist);
+        return convertToDTO(saved);
     }
 
     @Transactional

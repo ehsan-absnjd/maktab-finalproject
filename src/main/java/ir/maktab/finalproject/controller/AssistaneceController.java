@@ -14,13 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/assistances")
 public class AssistaneceController {
     @Autowired
     private AssistanceService assistanceService;
@@ -28,7 +29,8 @@ public class AssistaneceController {
     @Autowired
     private SubAssistanceService subAssistanceService;
 
-    @PostMapping("/assistances")
+    @PreAuthorize("hasAuthority('can_add_assistance')")
+    @PostMapping
     public ResponseEntity<ResponseTemplate<AssistanceOutputDTO>> addAssistance(@Valid AssistanceInputParam inputParam){
         AssistanceInputDTO dto = AssistanceInputDTO.builder().title(inputParam.getTitle()).build();
         AssistanceOutputDTO saved = assistanceService.save(dto);
@@ -39,7 +41,7 @@ public class AssistaneceController {
                         .data(saved).build());
     }
 
-    @GetMapping("/assistances")
+    @GetMapping
     public ResponseEntity<ResponseTemplate<List<AssistanceOutputDTO>>> getAssistances(Pageable pageable){
         List<AssistanceOutputDTO> retrieved = assistanceService.findAll(pageable);
         return ResponseEntity.ok(ResponseTemplate.<List<AssistanceOutputDTO>>builder()
@@ -49,7 +51,8 @@ public class AssistaneceController {
                 .build());
     }
 
-    @PostMapping("/assistances/{id}/subassistances")
+    @PreAuthorize("hasAuthority('can_add_subassistance')")
+    @PostMapping("/{id}/subassistances")
     public ResponseEntity<ResponseTemplate<SubAssistanceOutputDTO>> addSubAssistance
             (@PathVariable(name = "id") Long assistanceId, @Valid SubAssistanceInputParam inputParam){
         SubAssistanceInputDTO dto = SubAssistanceInputDTO.builder()
@@ -64,7 +67,7 @@ public class AssistaneceController {
                         .data(saved).build());
     }
 
-    @GetMapping("/assistances/{id}/subassistances")
+    @GetMapping("/{id}/subassistances")
     public ResponseEntity<ResponseTemplate<List<SubAssistanceOutputDTO>>> getSubAssistances(@PathVariable(name = "id") Long assistanceId , Pageable pageable){
         List<SubAssistanceOutputDTO> retrieved = subAssistanceService.findAll(assistanceId, pageable);
         return ResponseEntity.ok(ResponseTemplate.<List<SubAssistanceOutputDTO>>builder()

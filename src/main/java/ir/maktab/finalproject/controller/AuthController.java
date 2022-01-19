@@ -4,21 +4,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import ir.maktab.finalproject.controller.dto.CustomerRegisterParam;
-import ir.maktab.finalproject.controller.dto.LoginInputDTO;
+import ir.maktab.finalproject.controller.dto.LoginInputParam;
 import ir.maktab.finalproject.controller.dto.ResponseTemplate;
-import ir.maktab.finalproject.controller.dto.SpecialistRegisterParam;
-import ir.maktab.finalproject.service.dto.input.CustomerInputDTO;
-import ir.maktab.finalproject.service.dto.input.SpecialistInputDTO;
-import ir.maktab.finalproject.service.dto.output.CustomerOutputDTO;
-import ir.maktab.finalproject.service.dto.output.SpecialistOutputDTO;
-import ir.maktab.finalproject.service.CustomerService;
-import ir.maktab.finalproject.service.SpecialistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -63,7 +53,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseTemplate<Map>> login(@Valid @RequestBody LoginInputDTO loginInputDTO ){
+    public ResponseEntity<ResponseTemplate<Map>> login(@Valid @RequestBody LoginInputParam loginInputDTO ){
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginInputDTO.getEmail(), loginInputDTO.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);

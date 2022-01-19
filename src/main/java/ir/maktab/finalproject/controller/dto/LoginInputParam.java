@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginInputDTO {
+public class LoginInputParam {
     @NotNull(message = "email should not be null")
     String email;
 
