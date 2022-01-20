@@ -64,7 +64,7 @@ public class AuthController {
         UserDetails user = (UserDetails) authenticate.getPrincipal();
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", getAccessToken(user));
-        tokens.put("refresh_token", getRefreshToken(user));
+        tokens.put("refresh_token", getRefreshToken(user,loginInputDTO.getEmail()));
         ResponseTemplate<Map> result = ResponseTemplate.<Map>builder().code(200).message("login was successful.").data(tokens).build();
         return ResponseEntity.ok(result);
     }
@@ -73,12 +73,13 @@ public class AuthController {
     public ResponseEntity<ResponseTemplate<Map>> refreshToken(HttpServletRequest request){
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            System.out.println("it starts");
             try {
                 String refresh_token = authorizationHeader.substring("Bearer ".length());
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refresh_token);
-                String id = decodedJWT.getSubject();
-                UserDetails user = userDetailsService.loadUserByUsername( userService.findById (Long.valueOf(id)).getEmail());
+                String email = decodedJWT.getClaim("email").asString();
+                UserDetails user = userDetailsService.loadUserByUsername( email);
                 Map<String, String> tokens = new HashMap<>();
                 tokens.put("access_token", getAccessToken(user));
                 ResponseTemplate<Map> result = ResponseTemplate.<Map>builder().code(200).message("token regenerated successfully.").data(tokens).build();
@@ -91,9 +92,10 @@ public class AuthController {
         }
     }
 
-    private String getRefreshToken(UserDetails user){
+    private String getRefreshToken(UserDetails user,String email){
         return JWT.create()
                 .withSubject(user.getUsername())
+                .withClaim("email" , email)
                 .withExpiresAt(new Date(System.currentTimeMillis() + Integer.parseInt(refreshTokenPeriod) * 60 * 1000))
                 .sign(algorithm);
     }
@@ -102,7 +104,7 @@ public class AuthController {
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + Integer.parseInt(tokenPeriod) * 60 * 1000))
-                .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                .withClaim("authorities", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
     }
 }

@@ -2,12 +2,13 @@ package ir.maktab.finalproject.controller.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-@Builder
+@NoArgsConstructor
 @Setter
 @Getter
 public class RequestInputParam {

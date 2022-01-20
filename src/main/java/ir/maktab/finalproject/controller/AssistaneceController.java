@@ -31,7 +31,7 @@ public class AssistaneceController {
 
     @PreAuthorize("hasAuthority('can_add_assistance')")
     @PostMapping
-    public ResponseEntity<ResponseTemplate<AssistanceOutputDTO>> addAssistance(@Valid AssistanceInputParam inputParam){
+    public ResponseEntity<ResponseTemplate<AssistanceOutputDTO>> addAssistance(@Valid @RequestBody AssistanceInputParam inputParam){
         AssistanceInputDTO dto = AssistanceInputDTO.builder().title(inputParam.getTitle()).build();
         AssistanceOutputDTO saved = assistanceService.save(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -54,12 +54,12 @@ public class AssistaneceController {
     @PreAuthorize("hasAuthority('can_add_subassistance')")
     @PostMapping("/{id}/subassistances")
     public ResponseEntity<ResponseTemplate<SubAssistanceOutputDTO>> addSubAssistance
-            (@PathVariable(name = "id") Long assistanceId, @Valid SubAssistanceInputParam inputParam){
+            (@PathVariable Long id, @Valid @RequestBody SubAssistanceInputParam inputParam){
         SubAssistanceInputDTO dto = SubAssistanceInputDTO.builder()
                 .basePrice(inputParam.getBasePrice())
                 .description(inputParam.getDescription())
                 .title(inputParam.getTitle()).build();
-        SubAssistanceOutputDTO saved = subAssistanceService.save(assistanceId, dto);
+        SubAssistanceOutputDTO saved = subAssistanceService.save(id, dto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ResponseTemplate.<SubAssistanceOutputDTO>builder()
                         .code(201)

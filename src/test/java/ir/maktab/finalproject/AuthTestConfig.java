@@ -27,7 +27,7 @@ public class AuthTestConfig {
     }
     private List<GrantedAuthority> getAdminAuthorities() {
         String[] authorities = {"can_get_customers" , "can_get_specialists" ,"can_assign_assistance" ,
-                "can_get_user_requests" , "can_get_users" , "can_get_report" , "can_get_requests_by_parameter",
+                "can_get_user_requests" , "can_get_users","can_add_assistance" , "can_add_subassistance" , "can_get_report" , "can_get_requests_by_parameter",
 
         };
         return Arrays.stream(authorities).map( s -> new SimpleGrantedAuthority(s)).collect(Collectors.toList());

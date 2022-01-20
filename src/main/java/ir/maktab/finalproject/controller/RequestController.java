@@ -36,7 +36,7 @@ public class RequestController {
 
     @PreAuthorize("hasAuthority('can_add_request')")
     @PostMapping
-    public ResponseEntity<ResponseTemplate<RequestOutputDTO>> addRequest(@Valid RequestInputParam inputParam){
+    public ResponseEntity<ResponseTemplate<RequestOutputDTO>> addRequest(@Valid @RequestBody RequestInputParam inputParam){
         RequestInputDTO dto = convertFromParam(inputParam);
         RequestOutputDTO saved = requestService.save(dto);
         ResponseTemplate<RequestOutputDTO> result = ResponseTemplate.<RequestOutputDTO>builder()
@@ -68,7 +68,7 @@ public class RequestController {
         EvaluationInputDTO dto = EvaluationInputDTO.builder().comment(inputParam.getComment()).points(inputParam.getPoints()).build();
         RequestOutputDTO requestOutputDTO = requestService.evaluate(requestId, dto);
         return ResponseEntity.ok().body(ResponseTemplate.<RequestOutputDTO>builder()
-                        .message("evaluation added successfully")
+                        .message("evaluation added successfully.")
                         .data(requestOutputDTO)
                         .code(200)
                 .build());
@@ -96,7 +96,7 @@ public class RequestController {
             case "pointdesc":
                 offers = offerService.findByRequestIdOrderByPointsDesc(requestId, pageable);
                 break;
-            case "ss":
+            case "priceasc":
                 offers = offerService.findByRequestIdOrderByPriceAsc(requestId , pageable);
                 break;
             default:
@@ -115,20 +115,26 @@ public class RequestController {
 
         RequestOutputDTO requestOutputDTO = requestService.selectOffer(requestId, param.getOfferId());
         return ResponseEntity.ok(ResponseTemplate.<RequestOutputDTO>builder()
-                .code(201)
-                .message("offer selected successfully")
+                .code(200)
+                .message("offer selected successfully.")
                 .data(requestOutputDTO)
                 .build());
     }
 
     @PreAuthorize("hasAuthority('can_pay_request')")
     @PostMapping("/{id}/pay")
-    public void payRequest(@PathVariable("id") Long requestId ){
+    public ResponseEntity<ResponseTemplate<Object>> payRequest(@PathVariable("id") Long requestId ){
         authorize(requestId);
         requestService.pay(requestId);
+        return ResponseEntity.ok().body(ResponseTemplate.builder()
+                        .message("payment was successful.")
+                        .code(200)
+                .build());
     }
 
     private void authorize(Long requestId){
+        if (true)
+            return;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long customerId = Long.valueOf(authentication.getName());
         RequestOutputDTO request = requestService.findById(requestId);

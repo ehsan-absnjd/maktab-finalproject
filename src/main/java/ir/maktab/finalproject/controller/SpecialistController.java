@@ -87,24 +87,24 @@ public class SpecialistController {
                 .build());
     }
 
-    @PreAuthorize("#specialistId==authentication.name or hasAuthority('can_assign_assistance')")
+    @PreAuthorize("#id==authentication.name or hasAuthority('can_assign_assistance')")
     @PostMapping("/{id}/assistances")
-    public ResponseEntity<ResponseTemplate<Object>> addAssistanceToSpecialist(@PathVariable(name = "id") String specialistId , @Valid AddAssistanceInputParam inputParam){
-        specialistService.addAssistance(Long.valueOf(specialistId) , inputParam.getAssistanceId());
+    public ResponseEntity<ResponseTemplate<Object>> addAssistanceToSpecialist( @Valid @RequestBody AddAssistanceInputParam inputParam , @PathVariable String id){
+        specialistService.addAssistance(Long.valueOf(id) , inputParam.getAssistanceId());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ResponseTemplate.builder().code(201).message("assistance added successfully.").build());
     }
 
     @PreAuthorize("#specialistId==authentication.name")
     @GetMapping("/{id}/relevantrequests")
-    public ResponseEntity<ResponseTemplate<List<RequestOutputDTO>>> getRevelentRequests(@PathVariable String specialistId, Pageable pageable){
+    public ResponseEntity<ResponseTemplate<List<RequestOutputDTO>>> getRevelentRequests(@PathVariable("id") String specialistId, Pageable pageable){
         List<RequestOutputDTO> requestOutputDTOS = requestService.findForSpecialist(Long.valueOf(specialistId), pageable);
         return ResponseEntity.ok(ResponseTemplate.<List<RequestOutputDTO>>builder().code(200).message("ok").data(requestOutputDTOS).build());
     }
 
     @PreAuthorize("#specialistId==authentication.name or hasAuthority('can_get_specialists')")
     @GetMapping("/{id}/requests")
-    public ResponseEntity<ResponseTemplate<List<RequestOutputDTO>>> getSpecialistRequests(@PathVariable String specialistId, @RequestParam String status,  Pageable pageable){
+    public ResponseEntity<ResponseTemplate<List<RequestOutputDTO>>> getSpecialistRequests(@PathVariable("id") String specialistId, @RequestParam String status,  Pageable pageable){
         List<RequestOutputDTO> requestOutputDTOS = requestService.findBySpecialistId(Long.valueOf(specialistId), RequestStatus.valueOf(status), pageable);
         return ResponseEntity.ok(ResponseTemplate.<List<RequestOutputDTO>>builder().code(200).message("ok").data(requestOutputDTOS).build());
     }
