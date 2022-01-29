@@ -30,18 +30,11 @@ class UserRepositoryTest {
     TestHelper helper;
 
     @Test
-    public void ok(){
+    public void shouldBeAbleToGetUsers(){
         CustomerInputDTO customerInputDTO1 = helper.getCustomerInputDTO1();
         customerService.save(helper.getCustomerInputDTO1());
         specialistService.save(helper.getSpecialistInputDTO1());
         User byEmail = repository.findByEmail(customerInputDTO1.getEmail());
-        System.out.println(byEmail.getEmail() + byEmail.getPassword());
         assertNotNull(byEmail);
-
-
     }
-
-
-
-
 }

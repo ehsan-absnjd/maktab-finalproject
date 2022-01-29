@@ -45,6 +45,10 @@ public class Request {
     @NotNull
     private RequestStatus status;
 
+    private Date beginTime;
+
+    private Date finishTime;
+
     @OneToMany
     @JoinColumn(name = "order_id")
     @Builder.Default

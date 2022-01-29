@@ -30,17 +30,4 @@ public class SubAssistance{
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private Assistance assistance;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SubAssistance that = (SubAssistance) o;
-        return Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(basePrice, that.basePrice) && Objects.equals(description, that.description) && Objects.equals(assistance, that.assistance);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, basePrice, description, assistance);
-    }
 }

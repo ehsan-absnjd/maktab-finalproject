@@ -1,6 +1,6 @@
 package ir.maktab.finalproject.controller;
 
-import ir.maktab.finalproject.AuthTestConfig;
+import ir.maktab.finalproject.RestTestConfig;
 import ir.maktab.finalproject.RestControllerTest;
 import ir.maktab.finalproject.controller.dto.*;
 import org.junit.jupiter.api.Test;
@@ -13,14 +13,13 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import java.util.Date;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = RequestController.class)
-@SpringJUnitConfig(AuthTestConfig.class)
+@SpringJUnitConfig(RestTestConfig.class)
 class RequestControllerTest extends RestControllerTest {
     @Test
     @WithUserDetails("1")

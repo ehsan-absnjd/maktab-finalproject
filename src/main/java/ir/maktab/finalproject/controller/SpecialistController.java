@@ -12,6 +12,7 @@ import ir.maktab.finalproject.service.SpecialistService;
 import ir.maktab.finalproject.service.dto.input.SpecialistInputDTO;
 import ir.maktab.finalproject.service.dto.output.RequestOutputDTO;
 import ir.maktab.finalproject.service.dto.output.SpecialistOutputDTO;
+import ir.maktab.finalproject.util.CaptchaValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -51,6 +53,9 @@ public class SpecialistController {
     @Value("${uploaddir}")
     private String uploadDir;
 
+    @Autowired
+    private CaptchaValidator validator;
+
     private Path fileStorageLocation;
 
     @PostConstruct
@@ -65,7 +70,8 @@ public class SpecialistController {
     }
 
     @PostMapping()
-    public ResponseEntity<ResponseTemplate<SpecialistOutputDTO>> registerSpecialist(@Valid @RequestBody SpecialistRegisterParam input){
+    public ResponseEntity<ResponseTemplate<SpecialistOutputDTO>> registerSpecialist(@Valid @RequestBody SpecialistRegisterParam input , HttpServletRequest request){
+        validator.validate(request);
         SpecialistInputDTO inputDTO = convertFromParam(input);
         SpecialistOutputDTO saved = specialistService.save(inputDTO);
         ResponseTemplate<SpecialistOutputDTO> result = ResponseTemplate.<SpecialistOutputDTO>builder()
@@ -89,7 +95,7 @@ public class SpecialistController {
 
     @PreAuthorize("#id==authentication.name or hasAuthority('can_assign_assistance')")
     @PostMapping("/{id}/assistances")
-    public ResponseEntity<ResponseTemplate<Object>> addAssistanceToSpecialist( @Valid @RequestBody AddAssistanceInputParam inputParam , @PathVariable String id){
+    public ResponseEntity<ResponseTemplate<Object>> addAssistanceToSpecialist(@PathVariable String id , @Valid @RequestBody AddAssistanceInputParam inputParam ){
         specialistService.addAssistance(Long.valueOf(id) , inputParam.getAssistanceId());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ResponseTemplate.builder().code(201).message("assistance added successfully.").build());

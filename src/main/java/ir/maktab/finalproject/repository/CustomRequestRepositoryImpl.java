@@ -2,6 +2,7 @@ package ir.maktab.finalproject.repository;
 
 import ir.maktab.finalproject.entity.Request;
 import ir.maktab.finalproject.entity.RequestStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 @Repository
 public class CustomRequestRepositoryImpl implements CustomRequestRepository {
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     List<String> validParameters = Arrays.asList("page" ,"size" , "before" , "after" , "requeststatus" , "assistance" , "subassistance");
 
@@ -34,18 +35,11 @@ public class CustomRequestRepositoryImpl implements CustomRequestRepository {
         String conditions = queryParams.stream().collect(Collectors.joining(" AND "));
         if (queryParams.size()!=0)
             queryString+="WHERE " + conditions;
-        System.out.println(queryString);
         Query query = entityManager.createQuery(queryString);
         try {
             setParams(query , parameterMap);
         } catch (ParseException e) {
             e.printStackTrace();
-        }
-        if (parameterMap.containsKey("page")&& parameterMap.containsKey("size")){
-            int page = Integer.parseInt(parameterMap.get("page"));
-            int size = Integer.parseInt(parameterMap.get("size"));
-            query.setFirstResult((page-1) * size);
-            query.setMaxResults(page);
         }
         return query.getResultList();
     }
@@ -66,6 +60,12 @@ public class CustomRequestRepositoryImpl implements CustomRequestRepository {
         }
         if(parameterMap.containsKey("assistance")){
             query.setParameter("id", Long.valueOf(parameterMap.get("assistance")));
+        }
+        if (parameterMap.containsKey("page") && parameterMap.containsKey("size")){
+            int page = Integer.parseInt(parameterMap.get("page"));
+            int size = Integer.parseInt(parameterMap.get("size"));
+            query.setFirstResult((page-1) * size);
+            query.setMaxResults(page);
         }
     }
 

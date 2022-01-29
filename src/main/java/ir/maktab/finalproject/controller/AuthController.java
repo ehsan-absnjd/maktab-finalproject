@@ -73,7 +73,6 @@ public class AuthController {
     public ResponseEntity<ResponseTemplate<Map>> refreshToken(HttpServletRequest request){
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            System.out.println("it starts");
             try {
                 String refresh_token = authorizationHeader.substring("Bearer ".length());
                 JWTVerifier verifier = JWT.require(algorithm).build();

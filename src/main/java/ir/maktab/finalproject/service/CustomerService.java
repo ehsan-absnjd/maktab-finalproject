@@ -11,6 +11,7 @@ import ir.maktab.finalproject.repository.CustomerRepository;
 import ir.maktab.finalproject.service.dto.output.SpecialistOutputDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
@@ -21,6 +22,9 @@ import java.util.stream.Collectors;
 public class CustomerService{
     @Autowired
     private CustomerRepository repository;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Transactional
     public CustomerOutputDTO save(CustomerInputDTO inputDTO){
@@ -54,7 +58,7 @@ public class CustomerService{
     @Transactional
     public CustomerOutputDTO changePassword(Long customerId , String password){
         Customer customer = repository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException());
-        customer.setPassword(password);
+        customer.setPassword(encoder.encode(password));
         repository.save(customer);
         return convertToDTO(customer);
     }
@@ -99,7 +103,7 @@ public class CustomerService{
                 .firstName(inputDTO.getFirstName())
                 .lastName(inputDTO.getLastName())
                 .email(inputDTO.getEmail())
-                .password(inputDTO.getPassword())
+                .password(encoder.encode(inputDTO.getPassword()))
                 .credit(inputDTO.getCredit())
                 .registrationDate(new Date())
                 .status(UserStatus.NEW)

@@ -8,7 +8,7 @@ import ir.maktab.finalproject.service.RequestService;
 import ir.maktab.finalproject.service.dto.input.CustomerInputDTO;
 import ir.maktab.finalproject.service.dto.output.CustomerOutputDTO;
 import ir.maktab.finalproject.service.dto.output.RequestOutputDTO;
-import ir.maktab.finalproject.service.dto.output.SpecialistOutputDTO;
+import ir.maktab.finalproject.util.CaptchaValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -28,8 +29,12 @@ public class CustomerController {
     @Autowired
     private RequestService requestService;
 
+    @Autowired
+    CaptchaValidator validator;
+
     @PostMapping()
-    public ResponseEntity<ResponseTemplate<CustomerOutputDTO>> registerCustomer(@Valid @RequestBody CustomerRegisterParam input){
+    public ResponseEntity<ResponseTemplate<CustomerOutputDTO>> registerCustomer(@Valid @RequestBody CustomerRegisterParam input, HttpServletRequest request){
+        validator.validate(request);
         CustomerInputDTO inputDTO = convertFromParam(input);
         CustomerOutputDTO saved = customerService.save(inputDTO);
         ResponseTemplate<CustomerOutputDTO> result = ResponseTemplate.<CustomerOutputDTO>builder()

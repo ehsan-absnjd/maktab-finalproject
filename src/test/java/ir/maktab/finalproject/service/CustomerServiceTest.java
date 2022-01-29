@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import java.util.List;
@@ -27,6 +28,9 @@ class CustomerServiceTest {
     @Autowired
     TestHelper helper;
 
+    @Autowired
+    PasswordEncoder encoder;
+
     @Test
     public void whenSavingNewCustomer_shouldBeAbleToRetrieveIt(){
         CustomerInputDTO customerInputDTO = helper.getCustomerInputDTO1();
@@ -41,7 +45,7 @@ class CustomerServiceTest {
         CustomerInputDTO customerInputDTO = helper.getCustomerInputDTO1();
         CustomerOutputDTO saved = service.save(customerInputDTO);
         Customer customer = service.getById(saved.getId());
-        assertEquals( customerInputDTO.getPassword() , customer.getPassword());
+        assertTrue(encoder.matches(customerInputDTO.getPassword(), customer.getPassword()));
     }
 
     @Test
@@ -51,7 +55,7 @@ class CustomerServiceTest {
         CustomerOutputDTO saved = service.save(inputDTO);
         service.changePassword(saved.getId(), newPassword);
         Customer customer = service.getById(saved.getId());
-        assertEquals(newPassword,customer.getPassword());
+        assertTrue(encoder.matches(newPassword, customer.getPassword()));
     }
 
     @Test

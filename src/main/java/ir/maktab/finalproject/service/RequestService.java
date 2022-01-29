@@ -121,6 +121,7 @@ public class RequestService {
         if (request.getStatus()!=RequestStatus.WAITING_ARRIVAL)
             throw new InvalidBeginRequestException();
         request.setStatus(RequestStatus.BEGUN);
+        request.setBeginTime(new Date());
         Request saved = repository.save(request);
         return convertToDTO(saved);
     }
@@ -131,6 +132,7 @@ public class RequestService {
         if (request.getStatus()!=RequestStatus.BEGUN)
             throw new InvalidFinishRequestException();
         request.setStatus(RequestStatus.DONE);
+        request.setFinishTime(new Date());
         Request saved = repository.save(request);
         return convertToDTO(saved);
     }
@@ -143,7 +145,14 @@ public class RequestService {
         Offer selectedOffer = request.getSelectedOffer();
         Specialist specialist = selectedOffer.getSpecialist();
         request.setComment(inputDTO.getComment());
-        request.setPoints(inputDTO.getPoints());
+        Double promisedTime = selectedOffer.getExecutionPeriod();
+        Date finishTime = request.getFinishTime();
+        Date beginTime = request.getBeginTime();
+        double executionTime = (finishTime.getTime() - beginTime.getTime())/3_600_000d;
+        double points = inputDTO.getPoints();
+        if (promisedTime<executionTime)
+            points*=1-(executionTime-promisedTime)*.05;
+        request.setPoints(points);
         Request saved = repository.save(request);
         specialistRepository.updateSpecialistPoints(specialist.getId());
         return convertToDTO(saved);

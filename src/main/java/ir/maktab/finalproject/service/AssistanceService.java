@@ -7,6 +7,7 @@ import ir.maktab.finalproject.exception.AssistanceNotFoundException;
 import ir.maktab.finalproject.exception.SpecialistNotFoundException;
 import ir.maktab.finalproject.repository.AssistanceRepository;
 import ir.maktab.finalproject.repository.SpecialistRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class AssistanceService {
 
+public class AssistanceService {
     @Autowired
     private AssistanceRepository repository;
 

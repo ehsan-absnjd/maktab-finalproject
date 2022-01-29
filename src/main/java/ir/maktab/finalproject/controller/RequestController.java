@@ -10,6 +10,7 @@ import ir.maktab.finalproject.service.dto.input.OfferInputDTO;
 import ir.maktab.finalproject.service.dto.input.RequestInputDTO;
 import ir.maktab.finalproject.service.dto.output.OfferOutputDTO;
 import ir.maktab.finalproject.service.dto.output.RequestOutputDTO;
+import ir.maktab.finalproject.util.RequestAuthorizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,9 @@ public class RequestController {
 
     @Autowired
     private OfferService offerService;
+
+    @Autowired
+    private RequestAuthorizer authorizer;
 
     @PreAuthorize("hasAuthority('can_add_request')")
     @PostMapping
@@ -64,7 +68,7 @@ public class RequestController {
     @PreAuthorize("hasAuthority('can_evaluate')")
     @PostMapping("/{id}/evaluate")
     public ResponseEntity<ResponseTemplate<RequestOutputDTO>> addEvaluation(@PathVariable("id") Long requestId , EvaluationInputParam inputParam){
-        authorize(requestId);
+        authorizer.authorize(requestId);
         EvaluationInputDTO dto = EvaluationInputDTO.builder().comment(inputParam.getComment()).points(inputParam.getPoints()).build();
         RequestOutputDTO requestOutputDTO = requestService.evaluate(requestId, dto);
         return ResponseEntity.ok().body(ResponseTemplate.<RequestOutputDTO>builder()
@@ -90,7 +94,7 @@ public class RequestController {
     @PreAuthorize("hasAuthority('can_get_offers')")
     @GetMapping("/{id}/offers")
     public ResponseEntity<ResponseTemplate<List<OfferOutputDTO>>> getOffers(@PathVariable("id") Long requestId, @RequestParam String orderby , Pageable pageable){
-        authorize(requestId);
+        authorizer.authorize(requestId);
         List<OfferOutputDTO> offers;
         switch (orderby){
             case "pointdesc":
@@ -124,22 +128,12 @@ public class RequestController {
     @PreAuthorize("hasAuthority('can_pay_request')")
     @PostMapping("/{id}/pay")
     public ResponseEntity<ResponseTemplate<Object>> payRequest(@PathVariable("id") Long requestId ){
-        authorize(requestId);
+        authorizer.authorize(requestId);
         requestService.pay(requestId);
         return ResponseEntity.ok().body(ResponseTemplate.builder()
                         .message("payment was successful.")
                         .code(200)
                 .build());
-    }
-
-    private void authorize(Long requestId){
-        if (true)
-            return;
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long customerId = Long.valueOf(authentication.getName());
-        RequestOutputDTO request = requestService.findById(requestId);
-        if (!request.getCustomerId().equals(customerId))
-            throw new UnauthorizedCustomerException();
     }
 
     private OfferInputDTO convertFromParam(OfferInputParam inputParam) {

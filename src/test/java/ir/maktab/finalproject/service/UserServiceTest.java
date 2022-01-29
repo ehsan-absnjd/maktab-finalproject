@@ -83,9 +83,9 @@ class UserServiceTest {
         RequestOutputDTO requestOutputDTO = requestService.save(helper.getRequestInputDTO1(subAssistanceOutputDTO.getId(), customerId));
         OfferOutputDTO offerOutputDTO = offerService.save(requestOutputDTO.getId(), helper.getOfferInputDTO1(specialistId, 20000d));
         requestService.selectOffer(requestOutputDTO.getId() , offerOutputDTO.getId());
-        parameters.put("donecount" ,String.valueOf(1));
+        parameters.put("mindonecount" ,String.valueOf(1));
         List<UserOutputDTO> reportByParameters = service.getReportByParameters(parameters);
-        parameters.put("donecount" ,String.valueOf(2));
+        parameters.put("mindonecount" ,String.valueOf(2));
         List<UserOutputDTO> reportByParameters1 = service.getReportByParameters(parameters);
         assertEquals(1 , reportByParameters.size());
         assertEquals(0 , reportByParameters1.size());
@@ -100,9 +100,9 @@ class UserServiceTest {
         RequestOutputDTO requestOutputDTO = requestService.save(helper.getRequestInputDTO1(subAssistanceOutputDTO.getId(), customerId));
         OfferOutputDTO offerOutputDTO = offerService.save(requestOutputDTO.getId(), helper.getOfferInputDTO1(specialistId, 20000d));
         requestService.selectOffer(requestOutputDTO.getId() , offerOutputDTO.getId());
-        parameters.put("receivedcount" ,String.valueOf(1));
+        parameters.put("minreceivedcount" ,String.valueOf(1));
         List<UserOutputDTO> reportByParameters = service.getReportByParameters(parameters);
-        parameters.put("receivedcount" ,String.valueOf(2));
+        parameters.put("minreceivedcount" ,String.valueOf(2));
         List<UserOutputDTO> reportByParameters1 = service.getReportByParameters(parameters);
         assertEquals(1 , reportByParameters.size());
         assertEquals(0 , reportByParameters1.size());

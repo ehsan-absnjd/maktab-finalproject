@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -32,6 +33,9 @@ class SpecialistServiceTest {
     @Autowired
     TestHelper helper;
 
+    @Autowired
+    PasswordEncoder encoder;
+
     @Test
     public void whenSavingNewSpecialist_shouldBeAbleToRetrieveIt(){
         SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
@@ -45,7 +49,7 @@ class SpecialistServiceTest {
         SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
         SpecialistOutputDTO saved = service.save(specialistInputDTO1);
         Specialist specialist = service.getById(saved.getId());
-        assertEquals(specialistInputDTO1.getPassword(), specialist.getPassword());
+        assertTrue(encoder.matches(specialistInputDTO1.getPassword(), specialist.getPassword()));
     }
 
     @Test
@@ -55,7 +59,7 @@ class SpecialistServiceTest {
         SpecialistOutputDTO saved = service.save(specialistInputDTO1);
         service.changePassword(saved.getId(), newPassword);
         Specialist specialist = service.getById(saved.getId());
-        assertEquals(specialist.getPassword() , newPassword);
+        assertTrue(encoder.matches(newPassword, specialist.getPassword()));
     }
 
     @Test

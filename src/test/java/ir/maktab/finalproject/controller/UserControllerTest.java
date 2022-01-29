@@ -1,6 +1,6 @@
 package ir.maktab.finalproject.controller;
 
-import ir.maktab.finalproject.AuthTestConfig;
+import ir.maktab.finalproject.RestTestConfig;
 import ir.maktab.finalproject.RestControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = UserController.class)
-@SpringJUnitConfig(AuthTestConfig.class)
+@SpringJUnitConfig(RestTestConfig.class)
 class UserControllerTest extends RestControllerTest {
     @Test
     @WithUserDetails("3")

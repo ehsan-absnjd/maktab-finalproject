@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailService).passwordEncoder(NoOpPasswordEncoder.getInstance());
+        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -47,6 +47,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests().anyRequest().permitAll()
         .and().addFilterBefore(new CustomAuthorizationFilter(secret) , UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    @Profile("!test")
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder(10);
     }
 
     @Bean

@@ -139,4 +139,13 @@ public class ExceptionHandlerAdvice {
                 .build();
         ResponseEntity.status(HttpStatus.UNAUTHORIZED ).body(response);
     }
+
+    @ExceptionHandler(value = InvalidCaptchaException.class  )
+    public void notHuman(){
+        ResponseTemplate<Object> response = ResponseTemplate.builder()
+                .message("captcha is invalid.")
+                .errors(Arrays.asList(Error.builder().code(400).message("invalid captcha.").build()))
+                .build();
+        ResponseEntity.status(HttpStatus.UNAUTHORIZED ).body(response);
+    }
 }

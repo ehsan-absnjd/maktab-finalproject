@@ -1,6 +1,6 @@
 package ir.maktab.finalproject.controller;
 
-import ir.maktab.finalproject.AuthTestConfig;
+import ir.maktab.finalproject.RestTestConfig;
 import ir.maktab.finalproject.RestControllerTest;
 import ir.maktab.finalproject.controller.dto.CustomerRegisterParam;
 import ir.maktab.finalproject.service.dto.input.CustomerInputDTO;
@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = CustomerController.class)
-@SpringJUnitConfig(AuthTestConfig.class)
+@SpringJUnitConfig(RestTestConfig.class)
 class CustomerControllerTest extends RestControllerTest {
     @Test
     public void whenAddingCustomer_shouldGetTheRightResult() throws Exception {

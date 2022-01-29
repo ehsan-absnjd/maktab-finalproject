@@ -1,6 +1,6 @@
 package ir.maktab.finalproject.controller;
 
-import ir.maktab.finalproject.AuthTestConfig;
+import ir.maktab.finalproject.RestTestConfig;
 import ir.maktab.finalproject.RestControllerTest;
 import ir.maktab.finalproject.controller.dto.AssistanceInputParam;
 import ir.maktab.finalproject.controller.dto.SubAssistanceInputParam;
@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 @ActiveProfiles("test")
 @WebMvcTest(controllers = AssistaneceController.class)
-@SpringJUnitConfig(AuthTestConfig.class)
+@SpringJUnitConfig(RestTestConfig.class)
 class AssistaneceControllerTest extends RestControllerTest {
     @Test
     @WithUserDetails("3")

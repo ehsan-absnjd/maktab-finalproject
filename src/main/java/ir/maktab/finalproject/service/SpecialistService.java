@@ -11,6 +11,7 @@ import ir.maktab.finalproject.repository.AssistanceRepository;
 import ir.maktab.finalproject.repository.SpecialistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
@@ -24,6 +25,9 @@ public class SpecialistService {
 
     @Autowired
     private AssistanceRepository assistanceRepository;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Transactional
     public SpecialistOutputDTO save(SpecialistInputDTO inputDTO){
@@ -78,7 +82,7 @@ public class SpecialistService {
     @Transactional
     public SpecialistOutputDTO changePassword(Long specialistId , String password){
         Specialist specialist = repository.findById(specialistId).orElseThrow(() -> new SpecialistNotFoundException());
-        specialist.setPassword(password);
+        specialist.setPassword(encoder.encode(password));
         Specialist saved = repository.save(specialist);
         return convertToDTO(saved);
     }
@@ -139,7 +143,7 @@ public class SpecialistService {
                 .firstName(inputDTO.getFirstName())
                 .lastName(inputDTO.getLastName())
                 .email(inputDTO.getEmail())
-                .password(inputDTO.getPassword())
+                .password(encoder.encode(inputDTO.getPassword()))
                 .credit(inputDTO.getCredit())
                 .registrationDate(new Date())
                 .status(UserStatus.NEW)
