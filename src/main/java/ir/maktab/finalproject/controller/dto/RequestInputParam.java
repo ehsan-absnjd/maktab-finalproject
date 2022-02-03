@@ -1,10 +1,9 @@
 package ir.maktab.finalproject.controller.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -12,6 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Setter
 @Getter
+@ToString
 public class RequestInputParam {
     @NotNull
     private Long subAssistanceId;
@@ -26,8 +26,16 @@ public class RequestInputParam {
     private String description;
 
     @NotNull
+    @Future
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private Date executionDate;
 
     @NotNull
     private String address;
+
+    @NotNull
+    private Double longitude;
+
+    @NotNull
+    private Double latitude;
 }

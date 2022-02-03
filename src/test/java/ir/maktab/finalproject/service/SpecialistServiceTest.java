@@ -31,6 +31,9 @@ class SpecialistServiceTest {
     AssistanceService assistanceService;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     TestHelper helper;
 
     @Autowired
@@ -169,4 +172,23 @@ class SpecialistServiceTest {
         assertEquals(0,retrieved.size());
     }
 
+    @Test
+    public void whenApprovingTheWaitingSpecialist_itsStatusShouldBeAppproved(){
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        SpecialistOutputDTO target = service.save(specialistInputDTO1);
+        userService.verify(target.getId(), target.getEmail());
+        SpecialistOutputDTO toBeApproved = service.approve(target.getId());
+        assertEquals(UserStatus.APPROVED , toBeApproved.getStatus());
+    }
+
+
+    @Test
+    public void whenChangingSpecialistPhotoUrl_itShouldBeUpdated(){
+        SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
+        SpecialistOutputDTO target = service.save(specialistInputDTO1);
+        String newUrl = "newurl";
+        service.changePhotoUrl(target.getId(), newUrl);
+        SpecialistOutputDTO specialist = service.findById(target.getId());
+        assertEquals(newUrl ,specialist.getPhotoURL());
+    }
 }

@@ -65,7 +65,7 @@ public class CustomRequestRepositoryImpl implements CustomRequestRepository {
             int page = Integer.parseInt(parameterMap.get("page"));
             int size = Integer.parseInt(parameterMap.get("size"));
             query.setFirstResult((page-1) * size);
-            query.setMaxResults(page);
+            query.setMaxResults(size);
         }
     }
 

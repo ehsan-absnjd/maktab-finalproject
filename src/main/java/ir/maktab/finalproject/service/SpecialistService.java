@@ -1,5 +1,6 @@
 package ir.maktab.finalproject.service;
 
+import ir.maktab.finalproject.exception.InvalidSpecialistStatusException;
 import ir.maktab.finalproject.service.dto.input.SpecialistInputDTO;
 import ir.maktab.finalproject.service.dto.output.SpecialistOutputDTO;
 import ir.maktab.finalproject.entity.Assistance;
@@ -104,13 +105,22 @@ public class SpecialistService {
     }
 
     @Transactional
+    public SpecialistOutputDTO approve(Long specialistId){
+        Specialist specialist = repository.findById(specialistId).orElseThrow(() -> new SpecialistNotFoundException());
+        if (!specialist.getStatus().equals(UserStatus.WAITING_APPROVAL))
+            throw new InvalidSpecialistStatusException();
+        specialist.setStatus(UserStatus.APPROVED);
+        Specialist saved = repository.save(specialist);
+        return convertToDTO(saved);
+    }
+
+    @Transactional
     public SpecialistOutputDTO update(Long specialistId , SpecialistInputDTO inputDTO){
         Specialist specialist = repository.findById(specialistId).orElseThrow(() -> new SpecialistNotFoundException());
         specialist.setFirstName(inputDTO.getFirstName());
         specialist.setLastName(inputDTO.getLastName());
         specialist.setEmail(inputDTO.getEmail());
         specialist.setPassword(inputDTO.getPassword());
-        specialist.setCredit(inputDTO.getCredit());
         specialist.setPhotoURL(inputDTO.getPhotoURL());
         repository.save(specialist);
         return convertToDTO(specialist);
@@ -144,7 +154,6 @@ public class SpecialistService {
                 .lastName(inputDTO.getLastName())
                 .email(inputDTO.getEmail())
                 .password(encoder.encode(inputDTO.getPassword()))
-                .credit(inputDTO.getCredit())
                 .registrationDate(new Date())
                 .status(UserStatus.NEW)
                 .photoURL(inputDTO.getPhotoURL())

@@ -14,7 +14,7 @@ import java.util.Objects;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class User{
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -41,7 +41,8 @@ public abstract class User{
     private UserStatus status;
 
     @NotNull
-    private Double credit;
+    @Builder.Default
+    private Double credit=0d;
 
     @NotNull
     String role;

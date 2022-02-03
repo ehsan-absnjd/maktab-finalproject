@@ -32,9 +32,6 @@ public class OfferService {
     @Autowired
     private SpecialistRepository specialistRepository;
 
-    @Autowired
-    private SubAssistanceRepository subAssistanceRepository;
-
     @Transactional
     public OfferOutputDTO save(Long requestId , OfferInputDTO inputDTO){
         Request request = requestRepository.findById(requestId).orElseThrow(() -> new RequestNotFoundException());

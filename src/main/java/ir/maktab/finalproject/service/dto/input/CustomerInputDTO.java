@@ -25,7 +25,4 @@ public class CustomerInputDTO {
     @Size(min = 8)
     @Pattern( regexp = ".*[0-9].*")
     private String password;
-
-    @NotNull
-    private Double credit;
 }

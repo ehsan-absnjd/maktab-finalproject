@@ -14,7 +14,7 @@ public class TestHelper {
                 .lastName("rezaei")
                 .email("ali@rezaei.ir")
                 .password("12345678a")
-                .credit(100000d).build();
+                .build();
     }
 
     public CustomerInputDTO getCustomerInputDTO2(){
@@ -23,7 +23,7 @@ public class TestHelper {
                 .lastName("bashiri")
                 .email("mohsen.bashiri@gmail.com")
                 .password("12345678b")
-                .credit(200000d).build();
+                .build();
     }
 
     public SpecialistInputDTO getSpecialistInputDTO1() {
@@ -32,7 +32,6 @@ public class TestHelper {
                 .lastName("behzadeh")
                 .email("mohammad12@gmail.com")
                 .password("mohammad1")
-                .credit(300d)
                 .photoURL("fakeurl1")
                 .build();
     }
@@ -55,7 +54,6 @@ public class TestHelper {
                 .lastName("alavi")
                 .email("g.alavi@gmail.com")
                 .password("ghalghal323")
-                .credit(100d)
                 .photoURL("fakeurl2")
                 .build();
     }
@@ -64,14 +62,12 @@ public class TestHelper {
         assertEquals(inputDTO.getFirstName() , outputDTO.getFirstName());
         assertEquals(inputDTO.getLastName() , outputDTO.getLastName());
         assertEquals(inputDTO.getEmail() , outputDTO.getEmail());
-        assertEquals(inputDTO.getCredit() , outputDTO.getCredit());
     }
 
     public void testEquality(SpecialistInputDTO inputDTO, SpecialistOutputDTO outputDTO) {
         assertEquals(inputDTO.getFirstName(),outputDTO.getFirstName());
         assertEquals(inputDTO.getLastName(),outputDTO.getLastName());
         assertEquals(inputDTO.getEmail() , outputDTO.getEmail());
-        assertEquals(inputDTO.getCredit() , outputDTO.getCredit());
         assertEquals(inputDTO.getPhotoURL() , outputDTO.getPhotoURL());
     }
 
@@ -115,6 +111,8 @@ public class TestHelper {
                 .address("some address")
                 .executionDate(new Date(2022,11,11,15,30))
                 .address("tehran valiasr")
+                .latitude(10.0)
+                .longitude(10.0)
                 .description("some job you can't refuse")
                 .offeredPrice(200000d)
                 .build();
@@ -127,6 +125,8 @@ public class TestHelper {
                 .address("another address")
                 .executionDate(new Date(2022,10,12,12,30))
                 .address("tehran shariati")
+                .latitude(10.1)
+                .longitude(10.1)
                 .description("another job you can't refuse")
                 .offeredPrice(300000d)
                 .build();
@@ -139,6 +139,8 @@ public class TestHelper {
         assertEquals(target.getExecutionDate() , other.getExecutionDate());
         assertEquals(target.getDescription() , other.getDescription());
         assertEquals(target.getOfferedPrice() , other.getOfferedPrice());
+        assertEquals(target.getLatitude(),other.getLatitude());
+        assertEquals(target.getLongitude(),other.getLongitude());
     }
 
     public OfferInputDTO getOfferInputDTO1(Long specialistId , Double price) {

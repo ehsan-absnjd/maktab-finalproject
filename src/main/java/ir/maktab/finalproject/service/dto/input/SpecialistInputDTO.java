@@ -26,8 +26,5 @@ public class SpecialistInputDTO {
     @Pattern( regexp = ".*[0-9].*")
     private String password;
 
-    @NotNull
-    private Double credit;
-
     private String photoURL;
 }

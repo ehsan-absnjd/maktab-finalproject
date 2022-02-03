@@ -27,7 +27,7 @@ class SpecialistControllerTest extends RestControllerTest {
                 .lastName("abbasnejad")
                 .email("ehsan@abbas.nejad")
                 .password("ehsanabbas1")
-                .credit(135d)
+                .captcha("")
                 .build();
 
         mvc.perform(post("/specialists").contentType(MediaType.APPLICATION_JSON).content(toJson(specialist)))
@@ -84,6 +84,17 @@ class SpecialistControllerTest extends RestControllerTest {
     @WithUserDetails("2")
     public void whenGettingRequestsOfSpecialist_shouldGetTheRightResult() throws Exception {
         mvc.perform(get("/specialists/2/requests?status=WAITING_ARRIVAL").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("ok"))
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.errors").isEmpty());
+    }
+
+    @Test
+    @WithUserDetails("3")
+    public void whenApprovingSpecialist_shouldGetTheRightResult() throws Exception {
+        mvc.perform(post("/specialists/2/approve").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").value("ok"))

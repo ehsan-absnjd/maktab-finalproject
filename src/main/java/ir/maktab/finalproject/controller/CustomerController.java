@@ -9,6 +9,7 @@ import ir.maktab.finalproject.service.dto.input.CustomerInputDTO;
 import ir.maktab.finalproject.service.dto.output.CustomerOutputDTO;
 import ir.maktab.finalproject.service.dto.output.RequestOutputDTO;
 import ir.maktab.finalproject.util.CaptchaValidator;
+import ir.maktab.finalproject.util.VerificationMailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -32,9 +33,12 @@ public class CustomerController {
     @Autowired
     CaptchaValidator validator;
 
+    @Autowired
+    VerificationMailSender mailSender;
+
     @PostMapping()
     public ResponseEntity<ResponseTemplate<CustomerOutputDTO>> registerCustomer(@Valid @RequestBody CustomerRegisterParam input, HttpServletRequest request){
-        validator.validate(request);
+        validator.validate(request, input.getCaptcha());
         CustomerInputDTO inputDTO = convertFromParam(input);
         CustomerOutputDTO saved = customerService.save(inputDTO);
         ResponseTemplate<CustomerOutputDTO> result = ResponseTemplate.<CustomerOutputDTO>builder()
@@ -42,6 +46,7 @@ public class CustomerController {
                 .code(201)
                 .data(saved)
                 .build();
+        mailSender.sendVerificationMail(saved);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
@@ -69,7 +74,6 @@ public class CustomerController {
                 .lastName(input.getLastName())
                 .email(input.getEmail())
                 .password(input.getPassword())
-                .credit(input.getCredit())
                 .build();
     }
 }

@@ -98,6 +98,8 @@ public class RequestService {
         request.setDescription(inputDTO.getDescription());
         request.setExecutionDate(inputDTO.getExecutionDate());
         request.setAddress(inputDTO.getAddress());
+        request.setLongitude(inputDTO.getLongitude());
+        request.setLatitude(inputDTO.getLatitude());
         return convertToDTO(request);
     }
 
@@ -191,6 +193,8 @@ public class RequestService {
                 .address(inputDTO.getAddress())
                 .status(RequestStatus.WAITING_FOR_OFFERS)
                 .registerDate(new Date())
+                .longitude(inputDTO.getLongitude())
+                .latitude(inputDTO.getLatitude())
                 .build();
         return request;
     }
@@ -209,6 +213,8 @@ public class RequestService {
                 .selectedOffer(input.getSelectedOffer()!=null?input.getSelectedOffer().getId():null)
                 .points(input.getPoints())
                 .comment(input.getComment())
+                .latitude(input.getLatitude())
+                .longitude(input.getLongitude())
                 .build();
     }
 }

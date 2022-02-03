@@ -13,6 +13,7 @@ import ir.maktab.finalproject.service.dto.input.SpecialistInputDTO;
 import ir.maktab.finalproject.service.dto.output.RequestOutputDTO;
 import ir.maktab.finalproject.service.dto.output.SpecialistOutputDTO;
 import ir.maktab.finalproject.util.CaptchaValidator;
+import ir.maktab.finalproject.util.VerificationMailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -56,6 +57,9 @@ public class SpecialistController {
     @Autowired
     private CaptchaValidator validator;
 
+    @Autowired
+    VerificationMailSender mailSender;
+
     private Path fileStorageLocation;
 
     @PostConstruct
@@ -71,7 +75,7 @@ public class SpecialistController {
 
     @PostMapping()
     public ResponseEntity<ResponseTemplate<SpecialistOutputDTO>> registerSpecialist(@Valid @RequestBody SpecialistRegisterParam input , HttpServletRequest request){
-        validator.validate(request);
+        validator.validate(request,input.getCaptcha());
         SpecialistInputDTO inputDTO = convertFromParam(input);
         SpecialistOutputDTO saved = specialistService.save(inputDTO);
         ResponseTemplate<SpecialistOutputDTO> result = ResponseTemplate.<SpecialistOutputDTO>builder()
@@ -79,6 +83,7 @@ public class SpecialistController {
                 .code(201)
                 .data(saved)
                 .build();
+        mailSender.sendVerificationMail(saved);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
@@ -90,6 +95,17 @@ public class SpecialistController {
                         .code(200)
                         .message("ok")
                         .data(byId)
+                .build());
+    }
+
+    @PreAuthorize("hasAuthority('can_approve_specialists')")
+    @PostMapping("/{id}/approve")
+    public ResponseEntity<ResponseTemplate<SpecialistOutputDTO>> approve(@PathVariable String id){
+        SpecialistOutputDTO byId = specialistService.approve(Long.valueOf(id));
+        return ResponseEntity.ok().body(ResponseTemplate.<SpecialistOutputDTO>builder()
+                .code(200)
+                .message("ok")
+                .data(byId)
                 .build());
     }
 
@@ -115,6 +131,7 @@ public class SpecialistController {
         return ResponseEntity.ok(ResponseTemplate.<List<RequestOutputDTO>>builder().code(200).message("ok").data(requestOutputDTOS).build());
     }
 
+    @PreAuthorize("hasAuthority('can_upload_photo')")
     @PostMapping("/photos")
     public ResponseEntity<ResponseTemplate<String>> uploadPhoto(@RequestParam("file") MultipartFile file) {
         List<String> allowedTypes = Arrays.asList(".png" , ".jpg" );
@@ -178,9 +195,8 @@ public class SpecialistController {
         return SpecialistInputDTO.builder()
                 .firstName(input.getFirstName())
                 .lastName(input.getLastName())
-                .email(input.getLastName())
+                .email(input.getEmail())
                 .password(input.getPassword())
-                .credit(input.getCredit())
                 .build();
     }
 }

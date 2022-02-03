@@ -30,7 +30,9 @@ class RequestControllerTest extends RestControllerTest {
         inputParam.setAddress("add");
         inputParam.setCustomerId(1l);
         inputParam.setOfferedPrice(23d);
-        inputParam.setExecutionDate(new Date());
+        inputParam.setLatitude(10.0);
+        inputParam.setLongitude(10.0);
+        inputParam.setExecutionDate(new Date(System.currentTimeMillis() + 1000) );
 
         mvc.perform(post("/requests").contentType(MediaType.APPLICATION_JSON).content(toJson(inputParam)))
                 .andExpect(status().isCreated())
@@ -115,6 +117,28 @@ class RequestControllerTest extends RestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").value("payment was successful."))
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.errors").isEmpty());
+    }
+
+    @Test
+    @WithUserDetails("2")
+    public void whenStartingRequest_shouldGetTheRightResponse() throws Exception {
+        mvc.perform(post("/requests/1/start").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("request began successfully."))
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.errors").isEmpty());
+    }
+
+    @Test
+    @WithUserDetails("2")
+    public void whenEndingRequest_shouldGetTheRightResponse() throws Exception {
+        mvc.perform(post("/requests/1/end").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("request ended successfully."))
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.errors").isEmpty());
     }

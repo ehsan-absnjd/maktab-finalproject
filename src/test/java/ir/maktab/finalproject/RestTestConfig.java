@@ -1,8 +1,10 @@
 package ir.maktab.finalproject;
 
+import ir.maktab.finalproject.service.dto.output.UserOutputDTO;
 import ir.maktab.finalproject.util.Captcha;
 import ir.maktab.finalproject.util.CaptchaValidator;
 import ir.maktab.finalproject.util.RequestAuthorizer;
+import ir.maktab.finalproject.util.VerificationMailSender;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -36,14 +38,14 @@ public class RestTestConfig {
     private List<GrantedAuthority> getAdminAuthorities() {
         String[] authorities = {"can_get_customers" , "can_get_specialists" ,"can_assign_assistance" ,
                 "can_get_user_requests" , "can_get_users","can_add_assistance" , "can_add_subassistance" ,
-                "can_get_report" , "can_get_requests_by_parameter",
+                "can_get_report" , "can_get_requests_by_parameter", "can_approve_specialists"
 
         };
         return Arrays.stream(authorities).map( s -> new SimpleGrantedAuthority(s)).collect(Collectors.toList());
     }
 
     private List<GrantedAuthority> getSpecialistAuthorities() {
-        String[] authorities = {"can_add_offers"  };
+        String[] authorities = {"can_add_offers" , "can_start_request" , "can_end_request" };
         return Arrays.stream(authorities).map( s -> new SimpleGrantedAuthority(s)).collect(Collectors.toList());
     }
 
@@ -67,7 +69,7 @@ public class RestTestConfig {
     public CaptchaValidator captchaValidator(){
         return new CaptchaValidator() {
             @Override
-            public void validate(HttpServletRequest request) {
+            public void validate(HttpServletRequest request,String captcha) {
             }
         };
     }
@@ -76,7 +78,12 @@ public class RestTestConfig {
     public RequestAuthorizer requestAuthorizer(){
         return new RequestAuthorizer() {
             @Override
-            public void authorize(Long requestId) {
+            public void authorizeCustomer(Long requestId) {
+            }
+
+            @Override
+            public void authorizeSpecialist(Long requestId) {
+
             }
         };
     }
@@ -92,6 +99,17 @@ public class RestTestConfig {
             }
         };
     }
+
+    @Bean
+    public VerificationMailSender verificationMailSender() {
+        return new VerificationMailSender() {
+            @Override
+            public void sendVerificationMail(UserOutputDTO userOutputDTO) {
+
+            }
+        };
+    }
+
 
     @Bean
     public PasswordEncoder passwordEncoder(){

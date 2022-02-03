@@ -4,6 +4,8 @@ import ir.maktab.finalproject.entity.RequestStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Builder
@@ -33,4 +35,8 @@ public class RequestOutputDTO {
     private Double points;
 
     private String comment;
+
+    private Double longitude;
+
+    private Double latitude;
 }

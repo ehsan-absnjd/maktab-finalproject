@@ -27,25 +27,8 @@ class CustomerControllerTest extends RestControllerTest {
                 .lastName("abbasnejad")
                 .email("ehsan@abbas.nejad")
                 .password("ehsanabbas1")
-                .credit(135d)
+                .captcha("")
                 .build();
-
-        CustomerInputDTO customerInputDTO = CustomerInputDTO.builder()
-                .firstName(customer.getFirstName())
-                .lastName(customer.getLastName())
-                .email(customer.getEmail())
-                .password(customer.getPassword())
-                .credit(customer.getCredit()).build();
-
-        CustomerOutputDTO customerOutputDTO = CustomerOutputDTO.builder()
-                .id(1l)
-                .role("CUSTOMER")
-                .firstName(customer.getFirstName())
-                .lastName(customer.getLastName())
-                .email(customer.getEmail())
-                .build();
-
-        //Mockito.when(customerService.save(customerInputDTO)).thenReturn(customerOutputDTO);
 
         mvc.perform(post("/customers").contentType(MediaType.APPLICATION_JSON).content(toJson(customer)))
                 .andExpect(status().isCreated())
@@ -53,7 +36,6 @@ class CustomerControllerTest extends RestControllerTest {
                 .andExpect(jsonPath("$.message").value("customer registered successfully."))
                 .andExpect(jsonPath("$.code").value(201))
                 .andExpect(jsonPath("$.errors").isEmpty());
-                //.andExpect(jsonPath("$.data").value(customerOutputDTO));
     }
 
     @Test

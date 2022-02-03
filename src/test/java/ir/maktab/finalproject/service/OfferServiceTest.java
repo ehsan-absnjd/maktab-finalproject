@@ -149,9 +149,10 @@ class OfferServiceTest {
 
     @Test
     public void whenSettlingRequest_customerAndSpecialistsBalanceShouldBeAsExpected(){
+        customerService.addCredit(customerId, 100000d);
         Double specialistCredit = specialistService.findById(specialistId).getCredit();
         Double customerCredit = customerService.findById(customerId).getCredit();
-        Double offerPrice = 50000d;
+        Double offerPrice = 5000d;
         OfferInputDTO offerInputDTO1 = helper.getOfferInputDTO1(specialistId, offerPrice);
         OfferOutputDTO saved = service.save(requestId1, offerInputDTO1);
         requestService.selectOffer(requestId1, saved.getId());

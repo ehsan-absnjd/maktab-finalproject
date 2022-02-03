@@ -1,20 +1,24 @@
 package ir.maktab.finalproject.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import ir.maktab.finalproject.controller.dto.ResponseTemplate;
 import ir.maktab.finalproject.service.RequestService;
 import ir.maktab.finalproject.service.UserService;
 import ir.maktab.finalproject.service.dto.output.RequestOutputDTO;
 import ir.maktab.finalproject.service.dto.output.UserOutputDTO;
 import ir.maktab.finalproject.util.Captcha;
-import ir.maktab.finalproject.util.CaptchaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,19 +45,14 @@ public class UserController {
     @Autowired
     Captcha captchaUtil;
 
-    @GetMapping("/sendmail")
-    public void sendMail(){
-        String from = "maktab.serviceprovider@gmail.com";
-        String to = "1991frequency@gmail.com";
+    @Value("${secret}")
+    private String secret;
 
-        SimpleMailMessage message = new SimpleMailMessage();
+    private Algorithm algorithm ;
 
-        message.setFrom(from);
-        message.setTo(to);
-        message.setSubject("This is a plain text email");
-        message.setText("Hello guys! This is a plain text email.");
-
-        mailSender.send(message);
+    @PostConstruct
+    private void init(){
+        algorithm = Algorithm.HMAC256(secret.getBytes());
     }
 
     @GetMapping("/getcaptcha")
@@ -61,6 +60,7 @@ public class UserController {
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
         response.setHeader("Pragma", "no-cache");
+        response.setHeader("Access-Control-Allow-Credentials" ,"true");
         response.setDateHeader("Max-Age", 0);
         response.setContentType("image/jpeg");
         String captchaStr= captchaUtil.generateCaptcha(6);
@@ -87,15 +87,18 @@ public class UserController {
         }
     }
 
-    @GetMapping("/confirmcaptcha")
-    public ResponseEntity<String> getCaptcha(HttpServletRequest request){
-        HttpSession session = request.getSession();
-        String captcha = (String)session.getAttribute("CAPTCHA");
-        String param = request.getParameter("captcha");
-        if (param.equals(captcha)){
-            return ResponseEntity.ok("ok");
-        }
-        return ResponseEntity.ok("not ok");
+    @GetMapping("/verify")
+    public ResponseEntity<ResponseTemplate<UserOutputDTO>> verifyMail(@RequestParam String param){
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(param);
+        String subject = decodedJWT.getSubject();
+        String email = decodedJWT.getClaim("email").asString();
+        UserOutputDTO user = userService.verify(Long.valueOf(subject), email);
+        return ResponseEntity.ok(ResponseTemplate.<UserOutputDTO>builder()
+                .code(200)
+                .message("mail verified successfully.")
+                .data(user)
+                .build());
     }
 
     @PreAuthorize("hasAuthority('can_get_user_requests')")

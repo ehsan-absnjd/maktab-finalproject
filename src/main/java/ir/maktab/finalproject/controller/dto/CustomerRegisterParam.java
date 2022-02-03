@@ -28,5 +28,5 @@ public class CustomerRegisterParam {
     private String password;
 
     @NotNull
-    private Double credit;
+    private String captcha;
 }

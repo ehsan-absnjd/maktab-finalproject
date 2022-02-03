@@ -42,8 +42,8 @@ public class AssistaneceController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseTemplate<List<AssistanceOutputDTO>>> getAssistances(Pageable pageable){
-        List<AssistanceOutputDTO> retrieved = assistanceService.findAll(pageable);
+    public ResponseEntity<ResponseTemplate<List<AssistanceOutputDTO>>> getAssistances(){
+        List<AssistanceOutputDTO> retrieved = assistanceService.findAll();
         return ResponseEntity.ok(ResponseTemplate.<List<AssistanceOutputDTO>>builder()
                 .code(200)
                 .message("ok")
@@ -68,8 +68,8 @@ public class AssistaneceController {
     }
 
     @GetMapping("/{id}/subassistances")
-    public ResponseEntity<ResponseTemplate<List<SubAssistanceOutputDTO>>> getSubAssistances(@PathVariable(name = "id") Long assistanceId , Pageable pageable){
-        List<SubAssistanceOutputDTO> retrieved = subAssistanceService.findAll(assistanceId, pageable);
+    public ResponseEntity<ResponseTemplate<List<SubAssistanceOutputDTO>>> getSubAssistances(@PathVariable(name = "id") Long assistanceId ){
+        List<SubAssistanceOutputDTO> retrieved = subAssistanceService.findAll(assistanceId );
         return ResponseEntity.ok(ResponseTemplate.<List<SubAssistanceOutputDTO>>builder()
                 .code(200)
                 .message("ok")

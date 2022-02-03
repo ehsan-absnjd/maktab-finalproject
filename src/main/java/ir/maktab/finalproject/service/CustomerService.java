@@ -78,7 +78,6 @@ public class CustomerService{
         customer.setLastName(inputDTO.getLastName());
         customer.setEmail(inputDTO.getEmail());
         customer.setPassword(inputDTO.getPassword());
-        customer.setCredit(inputDTO.getCredit());
         repository.save(customer);
         return convertToDTO(customer);
     }
@@ -104,7 +103,6 @@ public class CustomerService{
                 .lastName(inputDTO.getLastName())
                 .email(inputDTO.getEmail())
                 .password(encoder.encode(inputDTO.getPassword()))
-                .credit(inputDTO.getCredit())
                 .registrationDate(new Date())
                 .status(UserStatus.NEW)
                 .build();

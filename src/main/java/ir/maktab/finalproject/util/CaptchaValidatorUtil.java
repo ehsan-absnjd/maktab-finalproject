@@ -8,11 +8,10 @@ import javax.servlet.http.HttpSession;
 @Component
 public class CaptchaValidatorUtil implements CaptchaValidator{
     @Override
-    public void validate(HttpServletRequest request) {
+    public void validate(HttpServletRequest request , String captcha) {
         HttpSession session = request.getSession();
-        String captcha = (String)session.getAttribute("CAPTCHA");
-        String param = request.getParameter("captcha");
-        if (captcha==null || !captcha.equals(param))
+        String validCaptcha = (String)session.getAttribute("CAPTCHA");
+        if (validCaptcha==null || !validCaptcha.equals(captcha))
             throw new InvalidCaptchaException();
     }
 }

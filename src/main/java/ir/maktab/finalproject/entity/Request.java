@@ -62,6 +62,12 @@ public class Request {
 
     private String comment;
 
+    @NotNull
+    private Double longitude;
+
+    @NotNull
+    private Double latitude;
+
     public void addOffer(Offer offer){
         offers.add(offer);
         offer.setRequest(this);

@@ -2,6 +2,7 @@ package ir.maktab.finalproject.service;
 
 import ir.maktab.finalproject.TestConfig;
 import ir.maktab.finalproject.TestHelper;
+import ir.maktab.finalproject.entity.UserStatus;
 import ir.maktab.finalproject.service.dto.input.*;
 import ir.maktab.finalproject.service.dto.output.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +43,9 @@ class UserServiceTest {
     OfferService offerService;
 
     Long specialistId;
+    String specialistEmail;
     Long customerId;
+    String customerEmail;
 
     @Autowired
     TestHelper helper;
@@ -51,8 +54,10 @@ class UserServiceTest {
     public void setup(){
         CustomerInputDTO customerInputDTO1 = helper.getCustomerInputDTO1();
         CustomerOutputDTO savedCustomer = customerService.save(customerInputDTO1);
+        customerEmail=customerInputDTO1.getEmail();
         SpecialistInputDTO specialistInputDTO1 = helper.getSpecialistInputDTO1();
         SpecialistOutputDTO savedSpecialist = specialistService.save(specialistInputDTO1);
+        specialistEmail=specialistInputDTO1.getEmail();
         specialistId = savedSpecialist.getId();
         customerId = savedCustomer.getId();
     }
@@ -106,5 +111,19 @@ class UserServiceTest {
         List<UserOutputDTO> reportByParameters1 = service.getReportByParameters(parameters);
         assertEquals(1 , reportByParameters.size());
         assertEquals(0 , reportByParameters1.size());
+    }
+
+    @Test
+    public void whenVerifyingSpecialist_itsStatusShouldBeWaitingApproval(){
+        service.verify(specialistId, specialistEmail );
+        SpecialistOutputDTO specialist = specialistService.findById(specialistId);
+        assertEquals(UserStatus.WAITING_APPROVAL , specialist.getStatus());
+    }
+
+    @Test
+    public void whenVerifyingCustomer_itsStatusShouldBeApproved(){
+        service.verify(customerId, customerEmail );
+        CustomerOutputDTO customer = customerService.findById(customerId);
+        assertEquals(UserStatus.APPROVED , customer.getStatus());
     }
 }

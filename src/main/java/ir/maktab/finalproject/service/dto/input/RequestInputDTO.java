@@ -27,4 +27,10 @@ public class RequestInputDTO {
 
     @NotNull
     private String address;
+
+    @NotNull
+    private Double longitude;
+
+    @NotNull
+    private Double latitude;
 }

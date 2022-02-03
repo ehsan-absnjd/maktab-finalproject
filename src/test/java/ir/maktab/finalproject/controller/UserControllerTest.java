@@ -51,5 +51,4 @@ class UserControllerTest extends RestControllerTest {
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.errors").isEmpty());
     }
-
 }
